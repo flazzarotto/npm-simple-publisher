@@ -1,0 +1,49 @@
+{
+	"name": "@kebab-case/npm-simple-publisher",
+	"version": "1.0.0",
+	"description": "nodejs command-line script allowing to easily compile and publish both node and es6 compliant code packages to npm.",
+	"author": "kebab-case",
+	"homepage": "https://github.com/flazzarotto/npm-simple-publisher",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/flazzarotto/npm-simple-publisher.git"
+	},
+	"bugs": {
+		"url": "https://github.com/flazzarotto/npm-simple-publisher/issues"
+	},
+	"main": "./dist/index.js",
+	"license": "GPL-3.0-or-later",
+	"keywords": [
+		"command-line",
+		"publisher",
+		"easy",
+		"simple",
+		"npm",
+		"babel",
+		"compile",
+		"es6",
+		"nodejs",
+		"yarn"
+	],
+	"private": false,
+	"scripts": {
+		"build": "rm -rf dist && babel src -d dist && chmod +x ./dist/*.js"
+	},
+	"bin": {
+		"kc-nsp": "./dist/bin.js"
+	},
+	"devDependencies": {
+		"@babel/cli": "^7.12.8",
+		"@babel/core": "^7.12.9",
+		"@babel/preset-env": "^7.12.7"
+	},
+	"dependencies": {
+		"@kebab-case/node-command-manager": "^1.0.0",
+		"argv": "^0.0.2",
+		"core-js": "^3.8.0",
+		"fs": "^0.0.1-security",
+		"prompt-async": "^0.9.9",
+		"request": "^2.88.2"
+	},
+	"module": "./src/index.js"
+}
