@@ -16,6 +16,7 @@ const args = {mod: 'default', ...argv.run()}
 const commands = {
     init,
     package,
+    // TODO manage LICENSE (maybe)
     // TODO build
     // TODO publish
     // TODO see if anything needs refacto
