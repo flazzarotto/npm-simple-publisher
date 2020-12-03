@@ -1,0 +1,44 @@
+{
+	"name": "npm-simple-publisher",
+	"version": "1.0.0",
+	"description": "your package description",
+	"author": "",
+	"homepage": "https://github.com/flazzarotto/npm-simple-publisher.git",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/flazzarotto/npm-simple-publisher.git.git"
+	},
+	"bugs": {
+		"url": "https://github.com/flazzarotto/npm-simple-publisher.git/issues"
+	},
+	"main": "./dist/index.js",
+	"license": "GPL-3.0-or-later",
+	"keywords": [
+		"comma",
+		"separated",
+		"keywords"
+	],
+	"private": false,
+	"scripts": {
+		"build": "rm -rf dist && babel src -d dist && chmod +x ./dist/*.js"
+	},
+	"bin": {
+		"kc-nps": "./dist/index.js",
+		"kc-nps-init": "./dist/init.js",
+		"kc-nps-package": "./dist/generatePackageJson.js",
+		"kc-nps-build": "./dist/build.js",
+		"kc-nps-publish": "./dist/publish.js"
+	},
+	"devDependencies": {
+		"@babel/cli": "^7.12.8",
+		"@babel/core": "^7.12.9",
+		"@babel/preset-env": "^7.12.7"
+	},
+	"dependencies": {
+		"argv": "^0.0.2",
+		"core-js": "^3.8.0",
+		"dotenv": "^8.2.0",
+		"fs": "^0.0.1-security",
+		"prompt": "^1.0.0"
+	}
+}
