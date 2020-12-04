@@ -121,7 +121,7 @@ publish to npm with only two commands.`
 
     readmeData = readmeData.substr(0, (index > -1) ? index : readmeData.length )
 
-    readmeData += poweredBy1 + poweredBy2
+    readmeData += "\n"+poweredBy1 + poweredBy2
 
     fs.writeFileSync(contextDir + 'README.md', readmeData)
 
