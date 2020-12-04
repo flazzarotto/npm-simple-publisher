@@ -20,6 +20,8 @@ var _github = require("./github");
 
 var _data = _interopRequireDefault(require("../data"));
 
+var _nodeCommandManager = require("@kebab-case/node-command-manager");
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
@@ -69,7 +71,7 @@ function init(fileDir, contextDir, args) {
           throw new Error('File ' + file + ' already present.');
         }
 
-        console.warn('File ' + file + ' will be replaced with fresh one.');
+        _nodeCommandManager.console.warn('File ' + file + ' will be replaced with fresh one.');
       }
 
       _fs["default"].writeFileSync(targetFile, data);
@@ -134,7 +136,8 @@ function init(fileDir, contextDir, args) {
           }
 
           var github = (0, _github.isGithub)(nspData.NSP_GIT_REPOSITORY_HOMEPAGE);
-          console.log(github);
+
+          _nodeCommandManager.console.log(github);
 
           if (github) {
             if (!nspData.NSP_ISSUES) {
@@ -150,7 +153,8 @@ function init(fileDir, contextDir, args) {
             }
           }
 
-          console.log(nspData);
+          _nodeCommandManager.console.log(nspData);
+
           done(JSON.stringify(nspData, null, "\t"));
 
           _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
@@ -160,7 +164,9 @@ function init(fileDir, contextDir, args) {
                   case 0:
                     (0, _generatePackageJson.generatePackageJson)(fileDir, contextDir);
                     _context.next = 3;
-                    return (0, _build.build)(fileDir, contextDir);
+                    return (0, _build.build)(fileDir, contextDir, {
+                      license: true
+                    });
 
                   case 3:
                   case "end":

@@ -1,5 +1,6 @@
 import fs from "fs";
 import fileData from '../data'
+import {console} from '@kebab-case/node-command-manager'
 
 export const packageOptions = []
 

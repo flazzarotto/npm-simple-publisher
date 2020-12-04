@@ -833,9 +833,9 @@
     to-fast-properties "^2.0.0"
 
 "@kebab-case/node-command-manager@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@kebab-case/node-command-manager/-/node-command-manager-1.0.0.tgz#176de75f33c39746a59313a1cacb90c66cf38401"
-  integrity sha512-Hakaf7t4c1+U8pBdYTkHeFt+97ebVnDEhw9xRL+jVrRtARQLOX0Ahv3zjeaH5ktfE/JFBhXJxoCVjTsTzebqZQ==
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@kebab-case/node-command-manager/-/node-command-manager-1.1.0.tgz#c9222ec1493d8073778cf6a717605d3255d9553c"
+  integrity sha512-UjluTZT0PY95vK9IcyrHp4f624oPvK+FgC27J/gi5JTb0OzPQcVhRf2RWIwKOepOQjdw/WsWZjgw0PWI8Y6XKA==
   dependencies:
     argv "^0.0.2"
     core-js "^3.8.0"
@@ -1077,9 +1077,9 @@ call-bind@^1.0.0:
     get-intrinsic "^1.0.0"
 
 caniuse-lite@^1.0.30001164:
-  version "1.0.30001164"
-  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001164.tgz#5bbfd64ca605d43132f13cc7fdabb17c3036bfdc"
-  integrity sha512-G+A/tkf4bu0dSp9+duNiXc7bGds35DioCyC6vgK2m/rjA4Krpy5WeZgZyfH2f0wj2kI6yAWWucyap6oOwmY1mg==
+  version "1.0.30001165"
+  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001165.tgz#32955490d2f60290bb186bb754f2981917fa744f"
+  integrity sha512-8cEsSMwXfx7lWSUMA2s08z9dIgsnR5NAqjXP23stdsU3AUWkCr/rr4s4OFtHXn5XXr6+7kam3QFVoYyXNPdJPA==
 
 caseless@~0.12.0:
   version "0.12.0"
@@ -1286,9 +1286,9 @@ ecc-jsbn@~0.1.1:
     safer-buffer "^2.1.0"
 
 electron-to-chromium@^1.3.612:
-  version "1.3.614"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.614.tgz#ff359e8d2249e2ce859a4c2bc34c22bd2e2eb0a2"
-  integrity sha512-JMDl46mg4G+n6q/hAJkwy9eMTj5FJjsE+8f/irAGRMLM4yeRVbMuRrdZrbbGGOrGVcZc4vJPjUpEUWNb/fA6hg==
+  version "1.3.615"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.615.tgz#50f523be4a04449410e9f3a694490814e602cd54"
+  integrity sha512-fNYTQXoUhNc6RmHDlGN4dgcLURSBIqQCN7ls6MuQ741+NJyLNRz8DxAC+pZpOKfRs6cfY0lv2kWdy8Oxf9j4+A==
 
 escalade@^3.1.1:
   version "3.1.1"

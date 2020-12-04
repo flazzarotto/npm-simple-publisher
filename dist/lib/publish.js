@@ -36,7 +36,7 @@ var publishOptions = [{
   type: 'boolean',
   "short": 's',
   description: 'Skip build',
-  example: "'kc-nps publish --skip' or 'kc-nps publish -s'"
+  example: "'kc-nps publish --skip-build' or 'kc-nps publish -s'"
 }, {
   name: 'yes',
   type: 'boolean',
@@ -57,19 +57,20 @@ function publish(_x, _x2, _x3, _x4) {
 }
 
 function _publish() {
-  _publish = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(fileDir, contextDir, args, previous) {
-    var yes, prompted, prompter, result, response, nspData, logged;
-    return regeneratorRuntime.wrap(function _callee2$(_context2) {
+  _publish = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(fileDir, contextDir, args, previous) {
+    var yes, prompted, prompter, result, response, nspData, publishArgs;
+    return regeneratorRuntime.wrap(function _callee$(_context) {
       while (1) {
-        switch (_context2.prev = _context2.next) {
+        switch (_context.prev = _context.next) {
           case 0:
             if (args.options['skip-build']) {
-              _context2.next = 4;
+              _context.next = 4;
               break;
             }
 
-            console.info('Running build');
-            _context2.next = 4;
+            _nodeCommandManager.console.info('Running build');
+
+            _context.next = 4;
             return (0, _build.build)(fileDir, contextDir);
 
           case 4:
@@ -84,90 +85,84 @@ function _publish() {
 
           case 8:
             if (prompted) {
-              _context2.next = 19;
+              _context.next = 19;
               break;
             }
 
-            _context2.next = 11;
+            _context.next = 11;
             return _promptAsync["default"].get(prompter);
 
           case 11:
-            result = _context2.sent;
+            result = _context.sent;
             response = Object.values(result)[0];
 
             if (!(!(yes = response === 'yes') && response !== 'no')) {
-              _context2.next = 16;
+              _context.next = 16;
               break;
             }
 
             prompter = 'Please enter `yes` or `no`';
-            return _context2.abrupt("continue", 8);
+            return _context.abrupt("continue", 8);
 
           case 16:
             prompted = true;
-            _context2.next = 8;
+            _context.next = 8;
             break;
 
           case 19:
             if (yes) {
-              _context2.next = 21;
+              _context.next = 21;
               break;
             }
 
-            return _context2.abrupt("return");
+            return _context.abrupt("return");
 
           case 21:
             nspData = JSON.parse(_fs["default"].readFileSync(contextDir + 'config.local.json').toString());
-
-            logged = /*#__PURE__*/function () {
-              var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
-                return regeneratorRuntime.wrap(function _callee$(_context) {
-                  while (1) {
-                    switch (_context.prev = _context.next) {
-                      case 0:
-                        if (args.options['update-version']) {
-                          nspData.NSP_PACKAGE_VERSION = version;
-
-                          _fs["default"].writeFileSync(contextDir + 'config.local.json', JSON.stringify(nspData, null, "\t"));
-
-                          console.info('Updating version to ' + version);
-                          (0, _generatePackageJson.generatePackageJson)(fileDir, contextDir);
-
-                          if (nspData.NSP_REPOSITORY_SSH_REMOTE) {
-                            console.log('pushing new tag to git remote');
-                            (0, _child_process.exec)("git add . && git commit -m \"version ".concat(version, "\" && git tag -a v").concat(version, " -m ") + "\"version ".concat(version, "\" && git push && git push --tags"));
-                          }
-                        }
-
-                        console.log('ready to publish to npm');
-                        _context.next = 4;
-                        return (0, _child_process.exec)('npm publish --access=public');
-
-                      case 4:
-                      case "end":
-                        return _context.stop();
-                    }
-                  }
-                }, _callee);
-              }));
-
-              return function logged() {
-                return _ref.apply(this, arguments);
-              };
-            }();
-
-            (0, _nodeCommandManager.interactiveShell)('npm', ['login'], {
+            _context.next = 24;
+            return (0, _nodeCommandManager.interactiveShell)('npm', ['login'], {
               username: nspData.NSP_USERNAME,
               password: nspData.NSP_PASSWORD,
               emailthisispublic: nspData.NSP_EMAIL
-            }, logged);
+            });
 
           case 24:
+            if (args.options['update-version']) {
+              nspData.NSP_PACKAGE_VERSION = version;
+
+              _fs["default"].writeFileSync(contextDir + 'config.local.json', JSON.stringify(nspData, null, "\t"));
+
+              _nodeCommandManager.console.info('Updating version to ' + version);
+
+              (0, _generatePackageJson.generatePackageJson)(fileDir, contextDir);
+
+              if (nspData.NSP_REPOSITORY_SSH_REMOTE) {
+                _nodeCommandManager.console.log('pushing new tag to git remote');
+
+                (0, _child_process.exec)("git add . && git commit -m \"version ".concat(version, "\" && git tag -a v").concat(version, " -m ") + "\"version ".concat(version, "\" && git push && git push --tags"));
+              }
+            }
+
+            publishArgs = ['publish'];
+
+            if (!nspData.NSP_PACKAGE_PRIVATE) {
+              publishArgs.push('--access=public');
+            }
+
+            _nodeCommandManager.console.info("ready to publish ".concat(nspData.NSP_PACKAGE_PRIVATE ? 'private' : 'public', " package to npm."));
+
+            _context.next = 30;
+            return (0, _nodeCommandManager.interactiveShell)('npm', publishArgs, null, false);
+
+          case 30:
+            _nodeCommandManager.console.log('DONE');
+
+          case 31:
           case "end":
-            return _context2.stop();
+            return _context.stop();
         }
       }
-    }, _callee2);
+    }, _callee);
   }));
   return _publish.apply(this, arguments);
 }

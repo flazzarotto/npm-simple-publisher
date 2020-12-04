@@ -1,7 +1,7 @@
 import fs from "fs";
 import {build} from "./build"
 import prompt from 'prompt-async'
-import {interactiveShell, updateVersion, getVersion} from "@kebab-case/node-command-manager"
+import {interactiveShell, updateVersion, getVersion, console} from "@kebab-case/node-command-manager"
 import {generatePackageJson} from "./generatePackageJson"
 import {exec} from "child_process"
 
@@ -20,7 +20,7 @@ const publishOptions = [
         type: 'boolean',
         short: 's',
         description: 'Skip build',
-        example: "'kc-nps publish --skip' or 'kc-nps publish -s'"
+        example: "'kc-nps publish --skip-build' or 'kc-nps publish -s'"
     },
     {
         name: 'yes',
@@ -69,28 +69,33 @@ export async function publish(fileDir, contextDir, args, previous) {
 
     const nspData = JSON.parse(fs.readFileSync(contextDir + 'config.local.json').toString())
 
-    const logged = async () => {
-        if (args.options['update-version']) {
-            nspData.NSP_PACKAGE_VERSION = version
-            fs.writeFileSync(contextDir + 'config.local.json', JSON.stringify(nspData, null, "\t"))
-            console.info('Updating version to ' + version)
-            generatePackageJson(fileDir, contextDir)
-            if (nspData.NSP_REPOSITORY_SSH_REMOTE) {
-                console.log('pushing new tag to git remote')
-                exec(`git add . && git commit -m "version ${version}" && git tag -a v${version} -m `
-                    + `"version ${version}" && git push && git push --tags`)
-            }
-        }
-
-        console.log('ready to publish to npm')
-
-        await exec('npm publish --access=public')
-    }
-
-    interactiveShell('npm', ['login'], {
+    await interactiveShell('npm', ['login'], {
         username: nspData.NSP_USERNAME,
         password: nspData.NSP_PASSWORD,
         emailthisispublic: nspData.NSP_EMAIL
-    }, logged)
+    })
 
+    if (args.options['update-version']) {
+        nspData.NSP_PACKAGE_VERSION = version
+        fs.writeFileSync(contextDir + 'config.local.json', JSON.stringify(nspData, null, "\t"))
+        console.info('Updating version to ' + version)
+        generatePackageJson(fileDir, contextDir)
+        if (nspData.NSP_REPOSITORY_SSH_REMOTE) {
+            console.log('pushing new tag to git remote')
+            exec(`git add . && git commit -m "version ${version}" && git tag -a v${version} -m `
+                + `"version ${version}" && git push && git push --tags`)
+        }
+    }
+
+
+    const publishArgs = ['publish']
+    if (!nspData.NSP_PACKAGE_PRIVATE) {
+        publishArgs.push('--access=public')
+    }
+
+    console.info(`ready to publish ${nspData.NSP_PACKAGE_PRIVATE?'private':'public'} package to npm.`)
+
+    await interactiveShell('npm', publishArgs, null, false)
+
+    console.log('DONE')
 }

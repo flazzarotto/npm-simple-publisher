@@ -1,8 +1,24 @@
 import fs from "fs";
 import {exec} from "child_process"
 import request from "request"
+import {console, interactiveShell} from '@kebab-case/node-command-manager'
 
-const buildOptions = []
+const buildOptions = [
+    {
+        name: 'skip-dependencies',
+        type: 'boolean',
+        short: 's',
+        description: 'Skip adding dev dependencies',
+        example: "'kc-nps build --skip-dependencies' or 'kc-nps build -s'"
+    },
+    {
+        name: 'license',
+        type: 'boolean',
+        short: 'l',
+        description: 'Generate license',
+        example: "'kc-nps build --license' or 'kc-nps build -l'"
+    },
+]
 
 export const buildMod = {
     mod: 'build',
@@ -11,7 +27,9 @@ export const buildMod = {
     exec: build
 }
 
-export async function build(fileDir, contextDir) {
+export async function build(fileDir, contextDir, args) {
+
+    args = {options: {}, ...args}
 
     const nspData = JSON.parse(fs.readFileSync(contextDir + 'config.local.json').toString())
 
@@ -26,20 +44,28 @@ export async function build(fileDir, contextDir) {
         }
     }
 
-    console.info('Adding dev dependancies')
-    await exec('yarn add -D @babel/preset-env @babel/core @babel/cli ' +
-        ' && yarn install && yarn build')
+    if (!args.options['skip-dependencies']) {
+        console.info('Adding dev dependancies')
+        await interactiveShell('yarn', ['add', '-D', '@babel/preset-env', '@babel/core', '@babel/cli'],
+            null, false)
+        await interactiveShell('yarn', ['install'], null, false)
+    }
 
-    console.info('Generating license')
-    const license = 'https://raw.githubusercontent.com/spdx/license-list-data/master/text/'
-        + nspData.NSP_PACKAGE_LICENSE + '.txt'
+    console.info('Yarn build')
+    await interactiveShell('yarn', ['build'], null, false)
 
-    request.get(license, function (error, response, body) {
-        if (!error && response.statusCode === 200) {
-            fs.writeFileSync(contextDir + 'LICENSE', body)
-        } else {
-            console.error(response.statusCode)
-            console.error('Error fetching `' + nspData.NSP_PACKAGE_LICENSE + '` license.')
-        }
-    })
+    if (args.options.license) {
+        console.info('Generating license')
+        const license = 'https://raw.githubusercontent.com/spdx/license-list-data/master/text/'
+            + nspData.NSP_PACKAGE_LICENSE + '.txt'
+
+        request.get(license, function (error, response, body) {
+            if (!error && response.statusCode === 200) {
+                fs.writeFileSync(contextDir + 'LICENSE', body)
+            } else {
+                console.error(response.statusCode)
+                console.error('Error fetching `' + nspData.NSP_PACKAGE_LICENSE + '` license.')
+            }
+        })
+    }
 }

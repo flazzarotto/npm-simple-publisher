@@ -10,6 +10,8 @@ var _fs = _interopRequireDefault(require("fs"));
 
 var _data = _interopRequireDefault(require("../data"));
 
+var _nodeCommandManager = require("@kebab-case/node-command-manager");
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
@@ -37,13 +39,15 @@ function generatePackageJson(fileDir, contextDir, args) {
     throw new Error('This seems not to be a project directory, `src` dir is missing.');
   }
 
-  console.info('Adding package.json settings');
+  _nodeCommandManager.console.info('Adding package.json settings');
+
   var packageJsonData;
 
   try {
     packageJsonData = _fs["default"].readFileSync(packageJsonFile).toString();
   } catch (e) {
-    console.warn('Creating a new package.json');
+    _nodeCommandManager.console.warn('Creating a new package.json');
+
     packageJsonData = '{}';
   }
 

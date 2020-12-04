@@ -5,6 +5,7 @@ import {generatePackageJson as generatePackageJson} from "./generatePackageJson"
 import {build} from "./build";
 import {generateGithubIssues, generateGithubRemote, generateGithubSshRemote, isGithub} from "./github"
 import fileData from "../data";
+import {console} from '@kebab-case/node-command-manager'
 
 export const initOptions = [{
     name: 'force',
@@ -125,7 +126,7 @@ export function init(fileDir, contextDir, args) {
 
                     (async function () {
                         generatePackageJson(fileDir, contextDir)
-                        await build(fileDir, contextDir)
+                        await build(fileDir, contextDir, {license: true})
                     })()
                 })
 
