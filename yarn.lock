@@ -832,10 +832,10 @@
     lodash "^4.17.19"
     to-fast-properties "^2.0.0"
 
-"@kebab-case/node-command-manager@^1.2.0":
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/@kebab-case/node-command-manager/-/node-command-manager-1.2.0.tgz#a7605a4596cac4b21ec9919862f0eb3287a6238b"
-  integrity sha512-EkZSlINn3FlW92L45lOiptl+mOo6ZsV4MQUlCldVdj7c8pq1frSZZFLenQCDrNJ5LSf/MFqjDo9WAYS7G/InJQ==
+"@kebab-case/node-command-manager@^1.2.1":
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/@kebab-case/node-command-manager/-/node-command-manager-1.2.1.tgz#353ca181fca978344bc3205cfc77cdb8a7fbada4"
+  integrity sha512-AIuAFwKRQT4eDzUS6R5Ar5Tzakn1tpnq/flb2IuuDvf0H64imMGs8BuUE5/F++ub4XKjZYfxofPRw7WyA/KFvg==
   dependencies:
     argv "^0.0.2"
     core-js "^3.8.0"

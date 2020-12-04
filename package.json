@@ -1,6 +1,6 @@
 {
 	"name": "@kebab-case/npm-simple-publisher",
-	"version": "1.0.12",
+	"version": "1.0.13",
 	"description": "nodejs command-line script allowing to easily compile and publish both node and es6 compliant code packages to npm.",
 	"author": "kebab-case",
 	"homepage": "https://github.com/flazzarotto/npm-simple-publisher",
@@ -39,7 +39,7 @@
 		"babel-eslint": "^10.1.0"
 	},
 	"dependencies": {
-		"@kebab-case/node-command-manager": "^1.2.0",
+		"@kebab-case/node-command-manager": "^1.2.1",
 		"argv": "^0.0.2",
 		"axios": "^0.21.0",
 		"core-js": "^3.8.0",
