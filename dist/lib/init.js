@@ -78,7 +78,7 @@ function _init() {
                           }
 
                           if (!force) {
-                            throw new Error('File ' + file + ' already present.');
+                            throw new Error('File ' + file + ' already present. Use --force (-f) to override file.');
                           }
 
                           _nodeCommandManager.console.warn('File ' + file + ' will be replaced with fresh one.');

@@ -47,7 +47,7 @@ export async function init(fileDir, contextDir, args) {
                     throw new Error('File ' + file + ' should not be a directory.')
                 }
                 if (!force) {
-                    throw new Error('File ' + file + ' already present.')
+                    throw new Error('File ' + file + ' already present. Use --force (-f) to override file.')
                 }
                 console.warn('File ' + file + ' will be replaced with fresh one.')
             }
