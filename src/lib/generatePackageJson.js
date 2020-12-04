@@ -15,10 +15,6 @@ export function generatePackageJson(fileDir, contextDir, args) {
 
     let packageJsonFile = contextDir+'package.json'
 
-    if (!fs.existsSync(contextDir+'src') || !fs.lstatSync(contextDir+'src').isDirectory()) {
-        throw new Error('This seems not to be a project directory, `src` dir is missing.')
-    }
-
     console.info('Adding package.json settings')
 
     let packageJsonData

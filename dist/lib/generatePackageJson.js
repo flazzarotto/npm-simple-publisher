@@ -35,10 +35,6 @@ function generatePackageJson(fileDir, contextDir, args) {
 
   var packageJsonFile = contextDir + 'package.json';
 
-  if (!_fs["default"].existsSync(contextDir + 'src') || !_fs["default"].lstatSync(contextDir + 'src').isDirectory()) {
-    throw new Error('This seems not to be a project directory, `src` dir is missing.');
-  }
-
   _nodeCommandManager.console.info('Adding package.json settings');
 
   var packageJsonData;

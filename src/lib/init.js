@@ -1,11 +1,12 @@
 import fs from "fs";
-import prompt from "prompt-async";
 import {parseBoolean} from "./parseBoolean";
 import {generatePackageJson as generatePackageJson} from "./generatePackageJson";
 import {build} from "./build";
 import {generateGithubIssues, generateGithubRemote, generateGithubSshRemote, isGithub} from "./github"
 import fileData from "../data";
-import {console} from '@kebab-case/node-command-manager'
+import {console, Prompt} from '@kebab-case/node-command-manager'
+
+const prompt = new Prompt()
 
 export const initOptions = [{
     name: 'force',
@@ -22,7 +23,8 @@ export const initMod = {
     exec: init
 }
 
-export function init(fileDir, contextDir, args) {
+export async function init(fileDir, contextDir, args) {
+
     const {
         force = false
     } = args.options
@@ -64,7 +66,7 @@ export function init(fileDir, contextDir, args) {
 
                 const properties = {}
 
-                const nspData = {
+                let nspData = {
                     ...defaultConfig,
                     ...actualConfig
                 }
@@ -76,59 +78,54 @@ export function init(fileDir, contextDir, args) {
                     }
                 }
 
-                prompt.start()
+                const result = await prompt.call(properties);
 
-                prompt.get({properties}, (err, result) => {
-                    prompt.stop()
-                    const del = []
-                    for (let name in result) {
-                        if (!{}.toString.call(result[name]).length) {
-                            del.push(name)
-                        }
+                const del = []
+                for (let name in result) {
+                    if (!{}.toString.call(result[name]).length) {
+                        del.push(name)
                     }
-                    for (let d of del) {
-                        delete result[d]
+                }
+                for (let d of del) {
+                    delete result[d]
+                }
+
+                nspData = {
+                    ...defaultConfig, ...result,
+                    NSP_PACKAGE_NAME: fs.realpathSync(contextDir).replace(/^.*[\\\/]/, '')
+                }
+
+                nspData.NSP_PACKAGE_PRIVATE = parseBoolean(nspData.NSP_PACKAGE_PRIVATE)
+                nspData.NSP_SCOPED_PACKAGE = parseBoolean(nspData.NSP_SCOPED_PACKAGE)
+
+                for (let prop in nspData) {
+                    if (nspData[prop] === '~') {
+                        nspData[prop] = null
                     }
+                }
 
-                    const nspData = {
-                        ...defaultConfig, ...result,
-                        NSP_PACKAGE_NAME: fs.realpathSync(contextDir).replace(/^.*[\\\/]/, '')
+                let github = isGithub(nspData.NSP_GIT_REPOSITORY_HOMEPAGE)
+
+                console.log(github)
+
+                if (github) {
+                    if (!nspData.NSP_ISSUES) {
+                        nspData.NSP_ISSUES = generateGithubIssues(github)
                     }
-
-                    nspData.NSP_PACKAGE_PRIVATE = parseBoolean(nspData.NSP_PACKAGE_PRIVATE)
-                    nspData.NSP_SCOPED_PACKAGE = parseBoolean(nspData.NSP_SCOPED_PACKAGE)
-
-                    for (let prop in nspData) {
-                        if (nspData[prop] === '~') {
-                            nspData[prop] = null
-                        }
+                    if (!nspData.NSP_REPOSITORY_REMOTE) {
+                        nspData.NSP_REPOSITORY_REMOTE = generateGithubRemote(github)
                     }
-
-                    let github = isGithub(nspData.NSP_GIT_REPOSITORY_HOMEPAGE)
-
-                    console.log(github)
-
-                    if (github) {
-                        if (!nspData.NSP_ISSUES) {
-                            nspData.NSP_ISSUES = generateGithubIssues(github)
-                        }
-                        if (!nspData.NSP_REPOSITORY_REMOTE) {
-                            nspData.NSP_REPOSITORY_REMOTE = generateGithubRemote(github)
-                        }
-                        if (!nspData.NSP_REPOSITORY_SSH_REMOTE) {
-                            nspData.NSP_REPOSITORY_SSH_REMOTE = generateGithubSshRemote(github)
-                        }
+                    if (!nspData.NSP_REPOSITORY_SSH_REMOTE) {
+                        nspData.NSP_REPOSITORY_SSH_REMOTE = generateGithubSshRemote(github)
                     }
+                }
 
-                    console.log(nspData)
+                console.log(nspData)
 
-                    done(JSON.stringify(nspData, null, "\t"));
+                done(JSON.stringify(nspData, null, "\t"))
 
-                    (async function () {
-                        generatePackageJson(fileDir, contextDir)
-                        await build(fileDir, contextDir, {license: true})
-                    })()
-                })
+                generatePackageJson(fileDir, contextDir)
+                await build(fileDir, contextDir, {license: true})
 
                 break
             default:

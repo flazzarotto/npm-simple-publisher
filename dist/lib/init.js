@@ -8,8 +8,6 @@ exports.initMod = exports.initOptions = void 0;
 
 var _fs = _interopRequireDefault(require("fs"));
 
-var _promptAsync = _interopRequireDefault(require("prompt-async"));
-
 var _parseBoolean = require("./parseBoolean");
 
 var _generatePackageJson = require("./generatePackageJson");
@@ -24,16 +22,17 @@ var _nodeCommandManager = require("@kebab-case/node-command-manager");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
-
-function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
-
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
+var prompt = new _nodeCommandManager.Prompt();
 var initOptions = [{
   name: 'force',
   "short": 'f',
@@ -50,142 +49,164 @@ var initMod = {
 };
 exports.initMod = initMod;
 
-function init(fileDir, contextDir, args) {
-  var _args$options$force = args.options.force,
-      force = _args$options$force === void 0 ? false : _args$options$force;
-  var files = ['.babelrc', '.gitignore', 'config.json' // 'packageJson.json'
-  ];
+function init(_x, _x2, _x3) {
+  return _init.apply(this, arguments);
+}
 
-  var _loop = function _loop() {
-    var file = _files[_i];
-    var targetFile = contextDir + (file !== 'config.json' ? file : 'config.local.json');
-    var sourceData = _data["default"][file];
+function _init() {
+  _init = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(fileDir, contextDir, args) {
+    var _args$options$force, force, files, _loop, _i, _files;
 
-    function done(data) {
-      if (_fs["default"].existsSync(targetFile)) {
-        if (_fs["default"].lstatSync(targetFile).isDirectory()) {
-          throw new Error('File ' + file + ' should not be a directory.');
-        }
+    return regeneratorRuntime.wrap(function _callee$(_context2) {
+      while (1) {
+        switch (_context2.prev = _context2.next) {
+          case 0:
+            _args$options$force = args.options.force, force = _args$options$force === void 0 ? false : _args$options$force;
+            files = ['.babelrc', '.gitignore', 'config.json' // 'packageJson.json'
+            ];
+            _loop = /*#__PURE__*/regeneratorRuntime.mark(function _loop() {
+              var file, targetFile, sourceData, done, defaultConfig, actualConfig, properties, nspData, name, _nspData$name, result, del, _name, _i2, _del, d, prop, github;
 
-        if (!force) {
-          throw new Error('File ' + file + ' already present.');
-        }
+              return regeneratorRuntime.wrap(function _loop$(_context) {
+                while (1) {
+                  switch (_context.prev = _context.next) {
+                    case 0:
+                      done = function _done(data) {
+                        if (_fs["default"].existsSync(targetFile)) {
+                          if (_fs["default"].lstatSync(targetFile).isDirectory()) {
+                            throw new Error('File ' + file + ' should not be a directory.');
+                          }
 
-        _nodeCommandManager.console.warn('File ' + file + ' will be replaced with fresh one.');
-      }
+                          if (!force) {
+                            throw new Error('File ' + file + ' already present.');
+                          }
 
-      _fs["default"].writeFileSync(targetFile, data);
-    }
+                          _nodeCommandManager.console.warn('File ' + file + ' will be replaced with fresh one.');
+                        }
 
-    switch (file) {
-      case 'config.json':
-        var defaultConfig = JSON.parse(sourceData);
-        var actualConfig = {};
+                        _fs["default"].writeFileSync(targetFile, data);
+                      };
 
-        if (_fs["default"].existsSync(targetFile)) {
-          actualConfig = JSON.parse(_fs["default"].readFileSync(targetFile).toString());
-        }
+                      file = _files[_i];
+                      targetFile = contextDir + (file !== 'config.json' ? file : 'config.local.json');
+                      sourceData = _data["default"][file];
+                      _context.t0 = file;
+                      _context.next = _context.t0 === 'config.json' ? 7 : 32;
+                      break;
 
-        var properties = {};
+                    case 7:
+                      defaultConfig = JSON.parse(sourceData);
+                      actualConfig = {};
 
-        var nspData = _objectSpread(_objectSpread({}, defaultConfig), actualConfig);
+                      if (_fs["default"].existsSync(targetFile)) {
+                        actualConfig = JSON.parse(_fs["default"].readFileSync(targetFile).toString());
+                      }
 
-        for (var name in defaultConfig) {
-          var _nspData$name;
+                      properties = {};
+                      nspData = _objectSpread(_objectSpread({}, defaultConfig), actualConfig);
 
-          properties[name] = {
-            "default": (_nspData$name = nspData[name]) !== null && _nspData$name !== void 0 ? _nspData$name : '~'
-          };
+                      for (name in defaultConfig) {
+                        properties[name] = {
+                          "default": (_nspData$name = nspData[name]) !== null && _nspData$name !== void 0 ? _nspData$name : '~'
+                        };
 
-          if (name === 'NSP_PASSWORD') {
-            properties[name].hidden = true;
-          }
-        }
+                        if (name === 'NSP_PASSWORD') {
+                          properties[name].hidden = true;
+                        }
+                      }
 
-        _promptAsync["default"].start();
+                      _context.next = 15;
+                      return prompt.call(properties);
 
-        _promptAsync["default"].get({
-          properties: properties
-        }, function (err, result) {
-          _promptAsync["default"].stop();
+                    case 15:
+                      result = _context.sent;
+                      del = [];
 
-          var del = [];
+                      for (_name in result) {
+                        if (!{}.toString.call(result[_name]).length) {
+                          del.push(_name);
+                        }
+                      }
 
-          for (var _name in result) {
-            if (!{}.toString.call(result[_name]).length) {
-              del.push(_name);
-            }
-          }
+                      for (_i2 = 0, _del = del; _i2 < _del.length; _i2++) {
+                        d = _del[_i2];
+                        delete result[d];
+                      }
 
-          for (var _i2 = 0, _del = del; _i2 < _del.length; _i2++) {
-            var d = _del[_i2];
-            delete result[d];
-          }
+                      nspData = _objectSpread(_objectSpread(_objectSpread({}, defaultConfig), result), {}, {
+                        NSP_PACKAGE_NAME: _fs["default"].realpathSync(contextDir).replace(/^.*[\\\/]/, '')
+                      });
+                      nspData.NSP_PACKAGE_PRIVATE = (0, _parseBoolean.parseBoolean)(nspData.NSP_PACKAGE_PRIVATE);
+                      nspData.NSP_SCOPED_PACKAGE = (0, _parseBoolean.parseBoolean)(nspData.NSP_SCOPED_PACKAGE);
 
-          var nspData = _objectSpread(_objectSpread(_objectSpread({}, defaultConfig), result), {}, {
-            NSP_PACKAGE_NAME: _fs["default"].realpathSync(contextDir).replace(/^.*[\\\/]/, '')
-          });
+                      for (prop in nspData) {
+                        if (nspData[prop] === '~') {
+                          nspData[prop] = null;
+                        }
+                      }
 
-          nspData.NSP_PACKAGE_PRIVATE = (0, _parseBoolean.parseBoolean)(nspData.NSP_PACKAGE_PRIVATE);
-          nspData.NSP_SCOPED_PACKAGE = (0, _parseBoolean.parseBoolean)(nspData.NSP_SCOPED_PACKAGE);
+                      github = (0, _github.isGithub)(nspData.NSP_GIT_REPOSITORY_HOMEPAGE);
 
-          for (var prop in nspData) {
-            if (nspData[prop] === '~') {
-              nspData[prop] = null;
-            }
-          }
+                      _nodeCommandManager.console.log(github);
 
-          var github = (0, _github.isGithub)(nspData.NSP_GIT_REPOSITORY_HOMEPAGE);
+                      if (github) {
+                        if (!nspData.NSP_ISSUES) {
+                          nspData.NSP_ISSUES = (0, _github.generateGithubIssues)(github);
+                        }
 
-          _nodeCommandManager.console.log(github);
+                        if (!nspData.NSP_REPOSITORY_REMOTE) {
+                          nspData.NSP_REPOSITORY_REMOTE = (0, _github.generateGithubRemote)(github);
+                        }
 
-          if (github) {
-            if (!nspData.NSP_ISSUES) {
-              nspData.NSP_ISSUES = (0, _github.generateGithubIssues)(github);
-            }
+                        if (!nspData.NSP_REPOSITORY_SSH_REMOTE) {
+                          nspData.NSP_REPOSITORY_SSH_REMOTE = (0, _github.generateGithubSshRemote)(github);
+                        }
+                      }
 
-            if (!nspData.NSP_REPOSITORY_REMOTE) {
-              nspData.NSP_REPOSITORY_REMOTE = (0, _github.generateGithubRemote)(github);
-            }
+                      _nodeCommandManager.console.log(nspData);
 
-            if (!nspData.NSP_REPOSITORY_SSH_REMOTE) {
-              nspData.NSP_REPOSITORY_SSH_REMOTE = (0, _github.generateGithubSshRemote)(github);
-            }
-          }
+                      done(JSON.stringify(nspData, null, "\t"));
+                      (0, _generatePackageJson.generatePackageJson)(fileDir, contextDir);
+                      _context.next = 31;
+                      return (0, _build.build)(fileDir, contextDir, {
+                        license: true
+                      });
 
-          _nodeCommandManager.console.log(nspData);
+                    case 31:
+                      return _context.abrupt("break", 34);
 
-          done(JSON.stringify(nspData, null, "\t"));
+                    case 32:
+                      done(sourceData);
+                      return _context.abrupt("break", 34);
 
-          _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
-            return regeneratorRuntime.wrap(function _callee$(_context) {
-              while (1) {
-                switch (_context.prev = _context.next) {
-                  case 0:
-                    (0, _generatePackageJson.generatePackageJson)(fileDir, contextDir);
-                    _context.next = 3;
-                    return (0, _build.build)(fileDir, contextDir, {
-                      license: true
-                    });
-
-                  case 3:
-                  case "end":
-                    return _context.stop();
+                    case 34:
+                    case "end":
+                      return _context.stop();
+                  }
                 }
-              }
-            }, _callee);
-          }))();
-        });
+              }, _loop);
+            });
+            _i = 0, _files = files;
 
-        break;
+          case 4:
+            if (!(_i < _files.length)) {
+              _context2.next = 9;
+              break;
+            }
 
-      default:
-        done(sourceData);
-        break;
-    }
-  };
+            return _context2.delegateYield(_loop(), "t0", 6);
 
-  for (var _i = 0, _files = files; _i < _files.length; _i++) {
-    _loop();
-  }
+          case 6:
+            _i++;
+            _context2.next = 4;
+            break;
+
+          case 9:
+          case "end":
+            return _context2.stop();
+        }
+      }
+    }, _callee);
+  }));
+  return _init.apply(this, arguments);
 }
