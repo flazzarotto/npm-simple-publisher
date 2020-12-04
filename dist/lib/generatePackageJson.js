@@ -65,8 +65,19 @@ function generatePackageJson(fileDir, contextDir, args) {
       return x.replace(/(^\s)|(\s$)/g, '');
     }),
     "private": nspData.NSP_PACKAGE_PRIVATE,
-    scripts: {
+    scripts: packageJsonData.scripts || {
       build: "rm -rf dist && babel src -d dist && chmod +x ./dist/*.js"
+    },
+    eslintConfig: packageJsonData.eslintConfig || {
+      "root": true,
+      "env": {
+        "node": true
+      },
+      "extends": ["eslint:recommended"],
+      "parserOptions": {
+        "parser": "babel-eslint"
+      },
+      "rules": {}
     }
   });
 

@@ -46,7 +46,8 @@ export async function build(fileDir, contextDir, args) {
 
     if (!args.options['skip-dependencies']) {
         console.info('Adding dev dependancies')
-        await interactiveShell('yarn', ['add', '-D', '@babel/preset-env', '@babel/core', '@babel/cli'],
+        await interactiveShell('yarn', ['add', '-D', '@babel/preset-env', '@babel/core',
+                '@babel/cli', 'babel-eslint'],
             null, false)
         await interactiveShell('yarn', ['install'], null, false)
     }

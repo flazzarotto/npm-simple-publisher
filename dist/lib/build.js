@@ -91,7 +91,7 @@ function _build() {
             _nodeCommandManager.console.info('Adding dev dependancies');
 
             _context.next = 13;
-            return (0, _nodeCommandManager.interactiveShell)('yarn', ['add', '-D', '@babel/preset-env', '@babel/core', '@babel/cli'], null, false);
+            return (0, _nodeCommandManager.interactiveShell)('yarn', ['add', '-D', '@babel/preset-env', '@babel/core', '@babel/cli', 'babel-eslint'], null, false);
 
           case 13:
             _context.next = 15;
