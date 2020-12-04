@@ -118,6 +118,8 @@ publish to npm with only two commands.`
 
     let index = readmeData.indexOf(poweredBy1)
 
+    console.info(`\nindex\n`)
+
     readmeData = readmeData.substr(0, (index > -1) ? index : readmeData.length )
 
     readmeData += poweredBy1 + poweredBy2
