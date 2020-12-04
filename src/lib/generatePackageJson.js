@@ -1,5 +1,5 @@
 import fs from "fs";
-import fileData from '../data/fileData'
+import fileData from '../data'
 
 export const packageOptions = []
 

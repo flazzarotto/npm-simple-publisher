@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import cmd from './'
+import cmd from './index'
 import fs from "fs"
 
 const contextDir = fs.realpathSync('.').replace(/\/+$/, '') + '/'

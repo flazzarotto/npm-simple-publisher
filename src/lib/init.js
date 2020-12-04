@@ -4,7 +4,7 @@ import {parseBoolean} from "./parseBoolean";
 import {generatePackageJson as generatePackageJson} from "./generatePackageJson";
 import {build} from "./build";
 import {generateGithubIssues, generateGithubRemote, generateGithubSshRemote, isGithub} from "./github"
-import fileData from "../data/fileData";
+import fileData from "../data";
 
 export const initOptions = [{
     name: 'force',
