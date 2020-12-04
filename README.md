@@ -2,7 +2,8 @@
 ================================
 
 This little nodejs command-line script allows you to easily compile and publish node **and** es6 compliant code 
- packages to npm.
+packages to npm. Init your project with minimal babel configuration for es6, compile to cjs and 
+publish to npm with only two commands.
 
 ## DEPENDANCIES & INSTALLATION
 This package requires `yarn` to behave correctly. 
@@ -11,11 +12,13 @@ This package requires `yarn` to behave correctly.
 # install yarn
 sudo apt install yarn
 # or (deprecated)
-npm install -g yarn
+sudo npm install -g yarn
 
 # TODO install globally
-npm install -g @kebab-case/npm-simple-publisher
+sudo npm install -g @kebab-case/npm-simple-publisher
 ```
+
+
 
 ## HOW TO
 

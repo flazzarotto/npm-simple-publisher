@@ -13,7 +13,7 @@ export const packageMod = {
 
 export function generatePackageJson(fileDir, contextDir, args) {
 
-    let packageJsonFile = contextDir+'package.json'
+    let packageJsonFile = contextDir + 'package.json'
 
     console.info('Adding package.json settings')
 
@@ -33,8 +33,8 @@ export function generatePackageJson(fileDir, contextDir, args) {
     packageJsonData = {
         ...JSON.parse(packageJsonData),
         name: (nspData.NSP_SCOPED_PACKAGE ? (
-            '@'+(nspData.NSP_SCOPE_NAME ?? nspData.NSP_USERNAME).replace(/(^@)|(\/$)/g,'')+'/'
-        ):'') + nspData.NSP_PACKAGE_NAME,
+            '@' + (nspData.NSP_SCOPE_NAME ?? nspData.NSP_USERNAME).replace(/(^@)|(\/$)/g, '') + '/'
+        ) : '') + nspData.NSP_PACKAGE_NAME,
         version: nspData.NSP_PACKAGE_VERSION,
         description: nspData.NSP_PACKAGE_DESCRIPTION,
         author: nspData.NSP_USERNAME,
@@ -82,4 +82,11 @@ export function generatePackageJson(fileDir, contextDir, args) {
         packageJsonFile,
         JSON.stringify(packageJsonData, null, "\t")
     )
+
+    let ep = contextDir + 'src/' + nspData.NSP_APP_ENTRY_POINT
+
+    if (!fs.existsSync(ep)) {
+        console.info('Creating ' + nspData.NSP_APP_ENTRY_POINT + ' entry point')
+        fs.writeFileSync(ep, '')
+    }
 }

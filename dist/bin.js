@@ -22,35 +22,24 @@ _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
       switch (_context.prev = _context.next) {
         case 0:
           _context.prev = 0;
-
-          if (!(!_fs["default"].existsSync(contextDir + 'src') || !_fs["default"].lstatSync(contextDir + 'src').isDirectory())) {
-            _context.next = 4;
-            break;
-          }
-
-          _nodeCommandManager.console.error('This seems not to be a project directory, `src` dir is missing.');
-
-          return _context.abrupt("return");
-
-        case 4:
-          _context.next = 6;
+          _context.next = 3;
           return _index["default"].call(fileDir, contextDir);
 
-        case 6:
-          _context.next = 11;
+        case 3:
+          _context.next = 8;
           break;
 
-        case 8:
-          _context.prev = 8;
+        case 5:
+          _context.prev = 5;
           _context.t0 = _context["catch"](0);
           throw _context.t0;
 
-        case 11:
+        case 8:
         case "end":
           return _context.stop();
       }
     }
-  }, _callee, null, [[0, 8]]);
+  }, _callee, null, [[0, 5]]);
 }))()["catch"](function (e) {
   _nodeCommandManager.console.error(e);
 });

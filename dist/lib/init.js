@@ -61,6 +61,37 @@ function _init() {
       while (1) {
         switch (_context2.prev = _context2.next) {
           case 0:
+            if (!(!_fs["default"].existsSync(contextDir + 'src') || !_fs["default"].lstatSync(contextDir + 'src').isDirectory())) {
+              _context2.next = 12;
+              break;
+            }
+
+            if (args.options.force) {
+              _context2.next = 4;
+              break;
+            }
+
+            _nodeCommandManager.console.error('This seems not to be a project directory, `src` dir is missing.' + ' Use init --force to create dir');
+
+            return _context2.abrupt("return");
+
+          case 4:
+            _context2.prev = 4;
+
+            _fs["default"].mkdirSync(contextDir + 'src');
+
+            _context2.next = 12;
+            break;
+
+          case 8:
+            _context2.prev = 8;
+            _context2.t0 = _context2["catch"](4);
+
+            _nodeCommandManager.console.error(_context2.t0);
+
+            return _context2.abrupt("return");
+
+          case 12:
             _args$options$force = args.options.force, force = _args$options$force === void 0 ? false : _args$options$force;
             files = ['.babelrc', '.gitignore', 'config.json' // 'packageJson.json'
             ];
@@ -188,25 +219,25 @@ function _init() {
             });
             _i = 0, _files = files;
 
-          case 4:
+          case 16:
             if (!(_i < _files.length)) {
-              _context2.next = 9;
+              _context2.next = 21;
               break;
             }
 
-            return _context2.delegateYield(_loop(), "t0", 6);
+            return _context2.delegateYield(_loop(), "t1", 18);
 
-          case 6:
+          case 18:
             _i++;
-            _context2.next = 4;
+            _context2.next = 16;
             break;
 
-          case 9:
+          case 21:
           case "end":
             return _context2.stop();
         }
       }
-    }, _callee);
+    }, _callee, null, [[4, 8]]);
   }));
   return _init.apply(this, arguments);
 }

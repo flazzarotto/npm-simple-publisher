@@ -25,6 +25,21 @@ export const initMod = {
 
 export async function init(fileDir, contextDir, args) {
 
+    if (!fs.existsSync(contextDir + 'src') || !fs.lstatSync(contextDir + 'src').isDirectory()) {
+        if (!args.options.force) {
+            console.error('This seems not to be a project directory, `src` dir is missing.'
+                + ' Use init --force to create dir')
+            return
+        }
+        try {
+            fs.mkdirSync(contextDir + 'src')
+        }
+        catch(e) {
+            console.error(e)
+            return
+        }
+    }
+
     const {
         force = false
     } = args.options

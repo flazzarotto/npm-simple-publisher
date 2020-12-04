@@ -8,10 +8,6 @@ const fileDir = fs.realpathSync(__dirname).replace(/\/+$/, '') + '/'
 
 ;(async () => {
     try {
-        if (!fs.existsSync(contextDir+'src') || !fs.lstatSync(contextDir+'src').isDirectory()) {
-            console.error('This seems not to be a project directory, `src` dir is missing.')
-            return
-        }
         await cmd.call(fileDir, contextDir)
     }
     catch (e) {

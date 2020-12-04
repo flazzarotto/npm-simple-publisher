@@ -95,5 +95,29 @@ export async function publish(fileDir, contextDir, args, previous) {
 
     console.info(`Ready to publish ${nspData.NSP_PACKAGE_PRIVATE?'private':'public'} package to npm.`)
 
+    let readmeData
+    try {
+         readmeData = fs.readFileSync(contextDir + 'README.md')
+    }
+    catch(e) {
+        readmeData = `# ${nspData.NSP_PACKAGE_NAME}
+Here be documentation soon`
+    }
+
+    const poweredBy = `
+-----------------------------------------
+## Powered by @kebab-case/npm-simple-publisher
+
+This package has been brought to you by [npm-simple-publisher](url=https://www.npmjs.com/package/@kebab-case/npm-simple-publisher)
+
+This little nodejs command-line script allows you to easily compile and publish node **and** es6 compliant code 
+packages to npm. Init your project with minimal babel configuration for es6, compile to cjs and 
+publish to npm with only two commands.`
+
+    if (readmeData.indexOf(poweredBy) === -1) {
+        readmeData += poweredBy
+        fs.writeFileSync(contextDir + 'README.md', readmeData)
+    }
+
     await interactiveShell('npm', publishArgs, null, false)
 }

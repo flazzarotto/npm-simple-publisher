@@ -95,4 +95,12 @@ function generatePackageJson(fileDir, contextDir, args) {
   }
 
   _fs["default"].writeFileSync(packageJsonFile, JSON.stringify(packageJsonData, null, "\t"));
+
+  var ep = contextDir + 'src/' + nspData.NSP_APP_ENTRY_POINT;
+
+  if (!_fs["default"].existsSync(ep)) {
+    _nodeCommandManager.console.info('Creating ' + nspData.NSP_APP_ENTRY_POINT + ' entry point');
+
+    _fs["default"].writeFileSync(ep, '');
+  }
 }
