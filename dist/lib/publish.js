@@ -58,7 +58,7 @@ function publish(_x, _x2, _x3, _x4) {
 
 function _publish() {
   _publish = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(fileDir, contextDir, args, previous) {
-    var yes, prompted, prompter, result, response, nspData, publishArgs, readmeData, poweredBy;
+    var yes, prompted, prompter, result, response, nspData, publishArgs, readmeData, poweredBy1, poweredBy2, index;
     return regeneratorRuntime.wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
@@ -157,18 +157,18 @@ function _publish() {
               readmeData = "# ".concat(nspData.NSP_PACKAGE_NAME, "\nHere be documentation soon");
             }
 
-            poweredBy = "\n-----------------------------------------\n## Powered by @kebab-case/npm-simple-publisher\n\nThis package has been brought to you by [npm-simple-publisher](url=https://www.npmjs.com/package/@kebab-case/npm-simple-publisher)\n\nThis little nodejs command-line script allows you to easily compile and publish node **and** es6 compliant code \npackages to npm. Init your project with minimal babel configuration for es6, compile to cjs and \npublish to npm with only two commands.";
+            poweredBy1 = "\n-----------------------------------------\n## Powered by @kebab-case/npm-simple-publisher";
+            poweredBy2 = "\n\nThis package has been brought to you by **[npm-simple-publisher](url=https://www.npmjs.com/package/@kebab-case/npm-simple-publisher)**\n\nThis little nodejs command-line script allows you to easily compile and publish node **and** es6 compliant code \npackages to npm. Init your project with minimal babel configuration for es6, compile to cjs and \npublish to npm with only two commands.";
+            index = readmeData.indexOf(poweredBy1);
+            readmeData = readmeData.substr(0, index > -1 ? index : readmeData.length);
+            readmeData += poweredBy1 + poweredBy2;
 
-            if (readmeData.indexOf(poweredBy) === -1) {
-              readmeData += poweredBy;
+            _fs["default"].writeFileSync(contextDir + 'README.md', readmeData);
 
-              _fs["default"].writeFileSync(contextDir + 'README.md', readmeData);
-            }
-
-            _context.next = 33;
+            _context.next = 37;
             return (0, _nodeCommandManager.interactiveShell)('npm', publishArgs, null, false);
 
-          case 33:
+          case 37:
           case "end":
             return _context.stop();
         }

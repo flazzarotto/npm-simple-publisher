@@ -104,20 +104,25 @@ export async function publish(fileDir, contextDir, args, previous) {
 Here be documentation soon`
     }
 
-    const poweredBy = `
+    const poweredBy1 =`
 -----------------------------------------
-## Powered by @kebab-case/npm-simple-publisher
+## Powered by @kebab-case/npm-simple-publisher`
 
-This package has been brought to you by [npm-simple-publisher](url=https://www.npmjs.com/package/@kebab-case/npm-simple-publisher)
+    const poweredBy2 = `
+
+This package has been brought to you by **[npm-simple-publisher](url=https://www.npmjs.com/package/@kebab-case/npm-simple-publisher)**
 
 This little nodejs command-line script allows you to easily compile and publish node **and** es6 compliant code 
 packages to npm. Init your project with minimal babel configuration for es6, compile to cjs and 
 publish to npm with only two commands.`
 
-    if (readmeData.indexOf(poweredBy) === -1) {
-        readmeData += poweredBy
-        fs.writeFileSync(contextDir + 'README.md', readmeData)
-    }
+    let index = readmeData.indexOf(poweredBy1)
+
+    readmeData = readmeData.substr(0, (index > -1) ? index : readmeData.length )
+
+    readmeData += poweredBy1 + poweredBy2
+
+    fs.writeFileSync(contextDir + 'README.md', readmeData)
 
     await interactiveShell('npm', publishArgs, null, false)
 }
