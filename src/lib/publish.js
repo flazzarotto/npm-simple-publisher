@@ -28,7 +28,8 @@ const publishOptions = [
         short: 'y',
         description: 'Publish without confirm',
         example: "'kc-nps publish --yes' or 'kc-nps publish -y'"
-    }
+    },
+
 ]
 
 export const publishMod = {
@@ -97,7 +98,7 @@ export async function publish(fileDir, contextDir, args, previous) {
 
     let readmeData
     try {
-         readmeData = fs.readFileSync(contextDir + 'README.md')
+         readmeData = fs.readFileSync(contextDir + 'README.md').toString()
     }
     catch(e) {
         readmeData = `# ${nspData.NSP_PACKAGE_NAME}
@@ -117,8 +118,6 @@ packages to npm. Init your project with minimal babel configuration for es6, com
 publish to npm with only two commands.`
 
     let index = readmeData.indexOf(poweredBy1)
-
-    console.info(`\nindex\n`)
 
     readmeData = readmeData.substr(0, (index > -1) ? index : readmeData.length )
 

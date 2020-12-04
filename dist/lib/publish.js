@@ -152,7 +152,7 @@ function _publish() {
             _nodeCommandManager.console.info("Ready to publish ".concat(nspData.NSP_PACKAGE_PRIVATE ? 'private' : 'public', " package to npm."));
 
             try {
-              readmeData = _fs["default"].readFileSync(contextDir + 'README.md');
+              readmeData = _fs["default"].readFileSync(contextDir + 'README.md').toString();
             } catch (e) {
               readmeData = "# ".concat(nspData.NSP_PACKAGE_NAME, "\nHere be documentation soon");
             }
@@ -160,18 +160,15 @@ function _publish() {
             poweredBy1 = "\n-----------------------------------------\n## Powered by @kebab-case/npm-simple-publisher";
             poweredBy2 = "\n\nThis package has been brought to you by **[npm-simple-publisher](url=https://www.npmjs.com/package/@kebab-case/npm-simple-publisher)**\n\nThis little nodejs command-line script allows you to easily compile and publish node **and** es6 compliant code \npackages to npm. Init your project with minimal babel configuration for es6, compile to cjs and \npublish to npm with only two commands.";
             index = readmeData.indexOf(poweredBy1);
-
-            _nodeCommandManager.console.info("\nindex\n");
-
             readmeData = readmeData.substr(0, index > -1 ? index : readmeData.length);
             readmeData += poweredBy1 + poweredBy2;
 
             _fs["default"].writeFileSync(contextDir + 'README.md', readmeData);
 
-            _context.next = 38;
+            _context.next = 37;
             return (0, _nodeCommandManager.interactiveShell)('npm', publishArgs, null, false);
 
-          case 38:
+          case 37:
           case "end":
             return _context.stop();
         }

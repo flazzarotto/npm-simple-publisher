@@ -95,7 +95,7 @@ specific one.
 -----------------------------------------
 ## Powered by @kebab-case/npm-simple-publisher
 
-This package has been brought to you by [npm-simple-publisher](url=https://www.npmjs.com/package/@kebab-case/npm-simple-publisher)
+This package has been brought to you by **[npm-simple-publisher](url=https://www.npmjs.com/package/@kebab-case/npm-simple-publisher)**
 
 This little nodejs command-line script allows you to easily compile and publish node **and** es6 compliant code 
 packages to npm. Init your project with minimal babel configuration for es6, compile to cjs and 
