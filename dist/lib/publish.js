@@ -155,9 +155,6 @@ function _publish() {
             return (0, _nodeCommandManager.interactiveShell)('npm', publishArgs, null, false);
 
           case 30:
-            _nodeCommandManager.console.log('DONE');
-
-          case 31:
           case "end":
             return _context.stop();
         }

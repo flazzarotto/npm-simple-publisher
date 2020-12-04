@@ -1,6 +1,6 @@
 import fs from "fs";
 import {exec} from "child_process"
-import request from "request"
+import axios from "axios"
 import {console, interactiveShell} from '@kebab-case/node-command-manager'
 
 const buildOptions = [
@@ -59,13 +59,13 @@ export async function build(fileDir, contextDir, args) {
         const license = 'https://raw.githubusercontent.com/spdx/license-list-data/master/text/'
             + nspData.NSP_PACKAGE_LICENSE + '.txt'
 
-        request.get(license, function (error, response, body) {
-            if (!error && response.statusCode === 200) {
-                fs.writeFileSync(contextDir + 'LICENSE', body)
-            } else {
-                console.error(response.statusCode)
-                console.error('Error fetching `' + nspData.NSP_PACKAGE_LICENSE + '` license.')
-            }
-        })
+        try {
+            let body = (await axios.get(license)).data
+            fs.writeFileSync(contextDir + 'LICENSE', body)
+        }
+        catch (error) {
+            console.error(error)
+            console.error('Error fetching `' + nspData.NSP_PACKAGE_LICENSE + '` license.')
+        }
     }
 }

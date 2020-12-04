@@ -10,7 +10,7 @@ var _fs = _interopRequireDefault(require("fs"));
 
 var _child_process = require("child_process");
 
-var _request = _interopRequireDefault(require("request"));
+var _axios = _interopRequireDefault(require("axios"));
 
 var _nodeCommandManager = require("@kebab-case/node-command-manager");
 
@@ -53,7 +53,7 @@ function build(_x, _x2, _x3) {
 
 function _build() {
   _build = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(fileDir, contextDir, args) {
-    var nspData, license;
+    var nspData, license, body;
     return regeneratorRuntime.wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
@@ -104,28 +104,40 @@ function _build() {
             return (0, _nodeCommandManager.interactiveShell)('yarn', ['build'], null, false);
 
           case 18:
-            if (args.options.license) {
-              _nodeCommandManager.console.info('Generating license');
-
-              license = 'https://raw.githubusercontent.com/spdx/license-list-data/master/text/' + nspData.NSP_PACKAGE_LICENSE + '.txt';
-
-              _request["default"].get(license, function (error, response, body) {
-                if (!error && response.statusCode === 200) {
-                  _fs["default"].writeFileSync(contextDir + 'LICENSE', body);
-                } else {
-                  _nodeCommandManager.console.error(response.statusCode);
-
-                  _nodeCommandManager.console.error('Error fetching `' + nspData.NSP_PACKAGE_LICENSE + '` license.');
-                }
-              });
+            if (!args.options.license) {
+              _context.next = 32;
+              break;
             }
 
-          case 19:
+            _nodeCommandManager.console.info('Generating license');
+
+            license = 'https://raw.githubusercontent.com/spdx/license-list-data/master/text/' + nspData.NSP_PACKAGE_LICENSE + '.txt';
+            _context.prev = 21;
+            _context.next = 24;
+            return _axios["default"].get(license);
+
+          case 24:
+            body = _context.sent.data;
+
+            _fs["default"].writeFileSync(contextDir + 'LICENSE', body);
+
+            _context.next = 32;
+            break;
+
+          case 28:
+            _context.prev = 28;
+            _context.t0 = _context["catch"](21);
+
+            _nodeCommandManager.console.error(_context.t0);
+
+            _nodeCommandManager.console.error('Error fetching `' + nspData.NSP_PACKAGE_LICENSE + '` license.');
+
+          case 32:
           case "end":
             return _context.stop();
         }
       }
-    }, _callee);
+    }, _callee, null, [[21, 28]]);
   }));
   return _build.apply(this, arguments);
 }

@@ -96,6 +96,4 @@ export async function publish(fileDir, contextDir, args, previous) {
     console.info(`ready to publish ${nspData.NSP_PACKAGE_PRIVATE?'private':'public'} package to npm.`)
 
     await interactiveShell('npm', publishArgs, null, false)
-
-    console.log('DONE')
 }
