@@ -18,6 +18,8 @@ var _build = require("./build");
 
 var _github = require("./github");
 
+var _fileData = _interopRequireDefault(require("../data/fileData"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
@@ -55,7 +57,7 @@ function init(fileDir, contextDir, args) {
   var _loop = function _loop() {
     var file = _files[_i];
     var targetFile = contextDir + (file !== 'config.json' ? file : 'config.local.json');
-    var sourceFile = fileDir + '../data/' + file;
+    var sourceData = _fileData["default"][file];
 
     function done(data) {
       if (_fs["default"].existsSync(targetFile)) {
@@ -75,7 +77,7 @@ function init(fileDir, contextDir, args) {
 
     switch (file) {
       case 'config.json':
-        var defaultConfig = JSON.parse(_fs["default"].readFileSync(sourceFile).toString());
+        var defaultConfig = JSON.parse(sourceData);
         var actualConfig = {};
 
         if (_fs["default"].existsSync(targetFile)) {
@@ -172,7 +174,7 @@ function init(fileDir, contextDir, args) {
         break;
 
       default:
-        done(_fs["default"].readFileSync(sourceFile));
+        done(sourceData);
         break;
     }
   };

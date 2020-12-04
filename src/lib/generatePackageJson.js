@@ -1,4 +1,5 @@
 import fs from "fs";
+import fileData from '../data/fileData'
 
 export const packageOptions = []
 
@@ -28,7 +29,7 @@ export function generatePackageJson(fileDir, contextDir, args) {
     }
 
     let nspData = {
-        ...JSON.parse(fs.readFileSync(fileDir + '/../data/config.json').toString()),
+        ...JSON.parse(fileData['config.json']),
         ...JSON.parse(fs.readFileSync('config.local.json').toString())
     }
 

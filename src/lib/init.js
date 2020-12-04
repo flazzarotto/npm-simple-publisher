@@ -3,7 +3,8 @@ import prompt from "prompt-async";
 import {parseBoolean} from "./parseBoolean";
 import {generatePackageJson as generatePackageJson} from "./generatePackageJson";
 import {build} from "./build";
-import {generateGithubIssues, generateGithubRemote, generateGithubSshRemote, isGithub} from "./github";
+import {generateGithubIssues, generateGithubRemote, generateGithubSshRemote, isGithub} from "./github"
+import fileData from "../data/fileData";
 
 export const initOptions = [{
     name: 'force',
@@ -35,7 +36,7 @@ export function init(fileDir, contextDir, args) {
     for (let file of files) {
 
         const targetFile = contextDir + ((file !== 'config.json') ? file : 'config.local.json')
-        const sourceFile = fileDir + '../data/' + file
+        const sourceData = fileData[file]
 
         function done(data) {
             if (fs.existsSync(targetFile)) {
@@ -53,7 +54,7 @@ export function init(fileDir, contextDir, args) {
         switch (file) {
             case 'config.json':
 
-                const defaultConfig = JSON.parse(fs.readFileSync(sourceFile).toString())
+                const defaultConfig = JSON.parse(sourceData)
                 let actualConfig = {}
 
                 if (fs.existsSync(targetFile)) {
@@ -130,7 +131,7 @@ export function init(fileDir, contextDir, args) {
 
                 break
             default:
-                done(fs.readFileSync(sourceFile))
+                done(sourceData)
                 break
         }
     }

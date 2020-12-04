@@ -8,6 +8,8 @@ exports.packageMod = exports.packageOptions = void 0;
 
 var _fs = _interopRequireDefault(require("fs"));
 
+var _fileData = _interopRequireDefault(require("../data/fileData"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
@@ -45,7 +47,7 @@ function generatePackageJson(fileDir, contextDir, args) {
     packageJsonData = '{}';
   }
 
-  var nspData = _objectSpread(_objectSpread({}, JSON.parse(_fs["default"].readFileSync(fileDir + '/../data/config.json').toString())), JSON.parse(_fs["default"].readFileSync('config.local.json').toString()));
+  var nspData = _objectSpread(_objectSpread({}, JSON.parse(_fileData["default"]['config.json'])), JSON.parse(_fs["default"].readFileSync('config.local.json').toString()));
 
   packageJsonData = _objectSpread(_objectSpread({}, JSON.parse(packageJsonData)), {}, {
     name: (nspData.NSP_SCOPED_PACKAGE ? '@' + ((_nspData$NSP_SCOPE_NA = nspData.NSP_SCOPE_NAME) !== null && _nspData$NSP_SCOPE_NA !== void 0 ? _nspData$NSP_SCOPE_NA : nspData.NSP_USERNAME).replace(/(^@)|(\/$)/g, '') + '/' : '') + nspData.NSP_PACKAGE_NAME,
