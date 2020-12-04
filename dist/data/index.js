@@ -5,9 +5,9 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports["default"] = void 0;
 
-var _babelrc = _interopRequireDefault(require("babelrc"));
+var _babelrc = _interopRequireDefault(require("./babelrc"));
 
-var _gitignore = _interopRequireDefault(require(".gitignore.js"));
+var _gitignore = _interopRequireDefault(require("./gitignore"));
 
 var _configJson = _interopRequireDefault(require("./config.json.js"));
 

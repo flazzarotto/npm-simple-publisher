@@ -1,5 +1,5 @@
-import babelrc from 'babelrc'
-import gitignore from '.gitignore.js'
+import babelrc from './babelrc'
+import gitignore from './gitignore'
 import configJson from './config.json.js'
 
 export default {
