@@ -81,7 +81,7 @@ export async function publish(fileDir, contextDir, args, previous) {
         console.info('Updating version to ' + version)
         generatePackageJson(fileDir, contextDir)
         if (nspData.NSP_REPOSITORY_SSH_REMOTE) {
-            console.log('pushing new tag to git remote')
+            console.info('Pushing new tag to git remote')
             exec(`git add . && git commit -m "version ${version}" && git tag -a v${version} -m `
                 + `"version ${version}" && git push && git push --tags`)
         }
@@ -93,7 +93,7 @@ export async function publish(fileDir, contextDir, args, previous) {
         publishArgs.push('--access=public')
     }
 
-    console.info(`ready to publish ${nspData.NSP_PACKAGE_PRIVATE?'private':'public'} package to npm.`)
+    console.info(`Ready to publish ${nspData.NSP_PACKAGE_PRIVATE?'private':'public'} package to npm.`)
 
     await interactiveShell('npm', publishArgs, null, false)
 }

@@ -137,7 +137,7 @@ function _publish() {
               (0, _generatePackageJson.generatePackageJson)(fileDir, contextDir);
 
               if (nspData.NSP_REPOSITORY_SSH_REMOTE) {
-                _nodeCommandManager.console.log('pushing new tag to git remote');
+                _nodeCommandManager.console.info('Pushing new tag to git remote');
 
                 (0, _child_process.exec)("git add . && git commit -m \"version ".concat(version, "\" && git tag -a v").concat(version, " -m ") + "\"version ".concat(version, "\" && git push && git push --tags"));
               }
@@ -149,7 +149,7 @@ function _publish() {
               publishArgs.push('--access=public');
             }
 
-            _nodeCommandManager.console.info("ready to publish ".concat(nspData.NSP_PACKAGE_PRIVATE ? 'private' : 'public', " package to npm."));
+            _nodeCommandManager.console.info("Ready to publish ".concat(nspData.NSP_PACKAGE_PRIVATE ? 'private' : 'public', " package to npm."));
 
             _context.next = 30;
             return (0, _nodeCommandManager.interactiveShell)('npm', publishArgs, null, false);
