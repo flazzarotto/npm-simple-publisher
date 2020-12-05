@@ -5,7 +5,7 @@ This little nodejs command-line script allows you to easily compile and publish 
 packages to npm. Init your project with minimal babel configuration for es6, compile to cjs and 
 publish to npm with only two commands.
 
-### <a name="installation"></a> INSTALLATION
+### <a name="installation">INSTALLATION</a> I
 This package requires `yarn` to behave correctly. 
 
 ```shell script
@@ -18,7 +18,7 @@ sudo npm install -g yarn
 sudo npm install -g @kebab-case/npm-simple-publisher
 ```
 
-### <a name="how-to"></a> HOW TO
+### <a name="how-to">HOW TO</a> 
 
 * First, create your new project `your-project-name` and a sub-folder `your-project-name/src` for your source
   code.
@@ -80,7 +80,7 @@ sudo npm install -g @kebab-case/npm-simple-publisher
   kc-nsp publish -y
   ```
   
-### <a name="publishing-hooks"></a> PUBLISHING HOOKS
+### <a name="publishing-hooks">PUBLISHING HOOKS</a> 
 You can define your own publishing hooks, which will be executed after `git push` (if configured) and before
 `npm publish`. Each hook is a command-line of your choice with any arguments you want.
 To do so:
@@ -123,12 +123,12 @@ You can add a `script` entry in `package.json` to avoid typing all that hooks ev
 ``` 
 This way you can publish more quickly using `yarn kn-publish [other publish args]`. 
 
-### <a name="further-help"></a>FURTHER HELP
+### <a name="further-help">FURTHER HELP</a>
 
 Type `kc-nsp --help` to get help on all available commands, and `kc-nsp [module] --help` for further help on a
 specific one. 
 
-### <a name="dependancies"></a> DEPENDANCIES
+### <a name="dependancies">DEPENDANCIES</a> 
 
 - argv
 - core-js
