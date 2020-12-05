@@ -105,7 +105,7 @@ To do so:
 }
 ```
 2. Hooks rely on `@kebab-case/node-command-manager/interactiveShell` to be executed.
-To get more help about `interactiveShell`, please visit https://www.npmjs.com/package/@kebab-case/node-command-manager#interactive%20shell
+To get more help about `interactiveShell`, please visit https://www.npmjs.com/package/@kebab-case/node-command-manager#interactive-shell
 Note that you can define hooks with blank / undefined entries (like passwords), so you can version it; if you do so,
 you will be prompted values for these.
 3. Don't modify the null field if you don't exactly now what you are doing
