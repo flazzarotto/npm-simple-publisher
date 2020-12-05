@@ -1,0 +1,5 @@
+{
+  "hooks": {
+    "install": ["sudo", ["apt","install", "yarn"], {"\\[sudo\\] .*": "****"}, true, null, ["\\[sudo\\] .*"]]
+  }
+}

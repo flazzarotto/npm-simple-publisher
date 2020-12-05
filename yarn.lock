@@ -833,9 +833,9 @@
     to-fast-properties "^2.0.0"
 
 "@kebab-case/node-command-manager@^1.2.1":
-  version "1.3.1"
-  resolved "https://registry.yarnpkg.com/@kebab-case/node-command-manager/-/node-command-manager-1.3.1.tgz#65f978e04687a6ab4f88f3bdf8c2a1f34c750684"
-  integrity sha512-b6tu8rRJAGr0Q7KVNfq+S1SL25cjYIewRqpDSjlUAMnnk/JIa8zVW1sMIds5admUiGoq+WJnaIuqj867+TWv4w==
+  version "1.3.6"
+  resolved "https://registry.yarnpkg.com/@kebab-case/node-command-manager/-/node-command-manager-1.3.6.tgz#7e0d2db6e28689250b3873d1597ffb836e820074"
+  integrity sha512-Os4ePUhWXVSJ79ERflpYA3uQHtWhxRlsBwX4Xrhjuh7G8hBbDGisJr2SyHLBIg4LYErMI0DUZyt8/AM+iAFB3Q==
   dependencies:
     argv "^0.0.2"
     core-js "^3.8.0"
