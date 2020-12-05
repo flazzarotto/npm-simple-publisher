@@ -46,12 +46,12 @@ const publishOptions = [
     },
     {
         name: 'publish-on',
-        type: 'list, string',
+        type: 'list',
         short: 'p',
         default: ['npm', 'git'],
         description: 'Publish only on listed package managers - only npm|git available but you\'ll be able to add any ' +
             'hook of your own in version 1.3 using config.json\n'
-        +'Default: npm|git',
+            + 'Default: npm|git',
         example: "'kc-nps publish --publish-on=npm --publish-on=git or 'kc-nps -p npm -p git'"
     },
 
@@ -66,8 +66,32 @@ export const publishMod = {
 
 export async function publish(fileDir, contextDir, args, previous) {
 
+    const nspData = JSON.parse(fs.readFileSync(contextDir + 'config.local.json').toString())
+
+    let configuredHooks
+    try {
+        configuredHooks = JSON.parse(fs.readFileSync(contextDir + 'config.json').toString()).NSP_HOOKS
+    } catch (e) {
+        configuredHooks = {}
+    }
+    nspData.NSP_HOOKS = {...configuredHooks, ...(nspData.NSP_HOOKS || {})}
+
     // TODO in version 1.3 .filter() must return false if: (no valid hook provided AND !== npm|git)
-    let platforms = (args.options['publish-on'] || ['npm', 'git']).filter(p => p.replace(/\s+/, '').length)
+    let platforms = (args.options['publish-on'] || ['npm', 'git']).filter(p => {
+            if (p === 'npm' || p === 'git') {
+                return true
+            }
+            if (!p.replace(/\s+/, '').length) {
+                console.error('Hook name cannot be empty')
+                return false
+            }
+            if (!nspData.NSP_HOOKS[p]) {
+                console.error(`Hook ${p} not found in config.json or config.local.json`)
+                return false
+            }
+            return true
+        }
+    )
 
     if (!platforms.length) {
         console.error('No package manager to publish on, please provide one at least or leave the option `publish-on`'
@@ -91,7 +115,7 @@ export async function publish(fileDir, contextDir, args, previous) {
 
 
     let prompter = `Are you sure you want to publish your package in version ${version} on `
-        +`${Object.keys(platforms).join('|')}? (yes/no)`
+        + `${Object.keys(platforms).join('|')}? (yes/no)`
 
     while (!prompted) {
         let result = await prompt.get(prompter)
@@ -105,8 +129,6 @@ export async function publish(fileDir, contextDir, args, previous) {
     if (!yes) {
         return
     }
-
-    const nspData = JSON.parse(fs.readFileSync(contextDir + 'config.local.json').toString())
 
     await interactiveShell('npm', ['login'], {
         username: nspData.NSP_USERNAME,
@@ -133,6 +155,20 @@ export async function publish(fileDir, contextDir, args, previous) {
                 let tagMessage = args.options['tag-message'] ?? `version ${version}`
                 exec(`git tag -a v${version} -m "${tagMessage}" && git push && git push --tags`)
             }
+        }
+    }
+
+    for (let hookName in nspData.NSP_HOOKS) {
+        try {
+            if (!platforms[hookName]) {
+                console.warn(`Publishing to ${hookName} skipped.`)
+                continue
+            }
+            console.info(`Publishing to ${hookName}...`)
+            let hook = nspData.NSP_HOOKS[hookName]
+            await interactiveShell(...hook)
+        } catch (e) {
+            console.error(e)
         }
     }
 

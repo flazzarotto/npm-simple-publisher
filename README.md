@@ -5,7 +5,7 @@ This little nodejs command-line script allows you to easily compile and publish 
 packages to npm. Init your project with minimal babel configuration for es6, compile to cjs and 
 publish to npm with only two commands.
 
-## DEPENDANCIES & INSTALLATION
+#### DEPENDANCIES & INSTALLATION
 This package requires `yarn` to behave correctly. 
 
 ```shell script
@@ -20,7 +20,7 @@ sudo npm install -g @kebab-case/npm-simple-publisher
 
 
 
-## HOW TO
+### HOW TO
 
 * First, create your new project `your-project-name` and a sub-folder `your-project-name/src` for your source
   code.
@@ -81,13 +81,56 @@ sudo npm install -g @kebab-case/npm-simple-publisher
   kc-nsp publish --yes
   kc-nsp publish -y
   ```
+  
+### PUBLISHING HOOKS
+You can define your own publishing hooks, which will be executed after `git push` (if configured) and before
+`npm publish`. Each hook is a command-line of your choice with any arguments you want.
+To do so:
+1. Add your own hook either in `./config.json` (if you want to version your hooks), either in `./config.local.json`
+(if you don't). Format of hooks field:
+```json
+{
+  "NSP_HOOKS": {
+    "hook-name": [
+      "command-name",
+      ["list of arguments"],
+      {
+        "prompt_question1": "answer to prompt_question1"
+      },
+      "interactive script (true|false)",
+      null,
+      [
+        "hidden_field1 (should match any of prompt_question)"
+      ]
+    ]
+  }
+}
+```
+2. Hooks rely on `@kebab-case/node-command-manager/interactiveShell` to be executed.
+To get more help about `interactiveShell`, please visit https://www.npmjs.com/package/@kebab-case/node-command-manager#interactive%20shell
+Note that you can define hooks with blank / undefined entries (like passwords), so you can version it; if you do so,
+you will be prompted values for these.
+3. Don't modify the null field if you don't exactly now what you are doing
+4. `prompt_questions` and `hidden_fields` can use regex syntax to match your command prompt.
+5. Use `kc-nps publish -p hook-name1 -p hook-name2 ...` to use your hooks. If you do so, you will have
+to specify **every** hook you want to use, even `git` and `npm`, or they'll simply be skipped.
+You can add a `script` entry in `package.json` to avoid typing all that hooks every single time :
+```json
+{
+  "scripts": {
+    // bunch of scripts
+    "kn-publish": "kc-nps publish -p npm -p git -p my hook"
+  }
+}
+``` 
+This way you can publish more quickly using `yarn kn-publish [other publish args]`. 
 
-## FURTHER HELP
+### FURTHER HELP
 
 Type `kc-nsp --help` to get help on all available commands, and `kc-nsp [module] --help` for further help on a
 specific one. 
 
-## DEPENDANCIES
+### DEPENDANCIES
 
 - argv
 - core-js

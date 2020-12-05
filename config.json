@@ -1,5 +1,5 @@
 {
-  "hooks": {
-    "install": ["sudo", ["apt","install", "yarn"], {"\\[sudo\\] .*": "****"}, true, null, ["\\[sudo\\] .*"]]
+  "NSP_HOOKS": {
+    "example_of_hook": ["sudo", ["apt","install", "yarn"], {"\\[sudo\\] .*": "****"}, true, null, ["\\[sudo\\] .*"]]
   }
 }
