@@ -139,7 +139,7 @@ export async function init(fileDir, contextDir, args) {
                 done(JSON.stringify(nspData, null, "\t"))
 
                 generatePackageJson(fileDir, contextDir)
-                await build(fileDir, contextDir, {license: true})
+                await build(fileDir, contextDir, {options: {license: true}})
 
                 break
             default:

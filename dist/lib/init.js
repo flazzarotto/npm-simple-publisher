@@ -196,7 +196,9 @@ function _init() {
                       (0, _generatePackageJson.generatePackageJson)(fileDir, contextDir);
                       _context.next = 32;
                       return (0, _build.build)(fileDir, contextDir, {
-                        license: true
+                        options: {
+                          license: true
+                        }
                       });
 
                     case 32:
