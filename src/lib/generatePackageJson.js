@@ -61,15 +61,15 @@ export function generatePackageJson(fileDir, contextDir, args) {
         },
     }
 
-    if (nspData.NSP_GIT_REPOSITORY_HOMEPAGE) {
-        packageJsonData.homepage = nspData.NSP_GIT_REPOSITORY_HOMEPAGE
-    }
-
     if (nspData.NSP_REPOSITORY_REMOTE) {
         packageJsonData.repository = {
             type: "git",
             url: nspData.NSP_REPOSITORY_REMOTE
         }
+    }
+
+    if (nspData.NSP_GIT_REPOSITORY_HOMEPAGE) {
+        packageJsonData.homepage = nspData.NSP_GIT_REPOSITORY_HOMEPAGE
     }
 
     if (nspData.NSP_ISSUES) {

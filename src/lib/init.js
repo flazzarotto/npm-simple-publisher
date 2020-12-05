@@ -2,7 +2,7 @@ import fs from "fs";
 import {parseBoolean} from "./parseBoolean";
 import {generatePackageJson as generatePackageJson} from "./generatePackageJson";
 import {build} from "./build";
-import {generateGithubIssues, generateGithubRemote, generateGithubSshRemote, isGithub} from "./github"
+import {generateGithubIssues, generateGithubHomepage, generateGithubSshRemote, isGithub} from "./github"
 import fileData from "../data";
 import {console, Prompt} from '@kebab-case/node-command-manager'
 
@@ -67,6 +67,8 @@ export async function init(fileDir, contextDir, args) {
                 console.warn('File ' + file + ' will be replaced with fresh one.')
             }
             fs.writeFileSync(targetFile, data)
+
+            console.warn('Init done. Please ensure that all of `./config.local.json` data is valid.')
         }
 
         switch (file) {
@@ -79,7 +81,7 @@ export async function init(fileDir, contextDir, args) {
                     actualConfig = JSON.parse(fs.readFileSync(targetFile).toString())
                 }
 
-                const properties = {}
+                const properties = fileData.configProperties
 
                 let nspData = {
                     ...defaultConfig,
@@ -87,11 +89,14 @@ export async function init(fileDir, contextDir, args) {
                 }
 
                 for (let name in defaultConfig) {
-                    properties[name] = {default: nspData[name] ?? '~'}
-                    if (name === 'NSP_PASSWORD') {
-                        properties[name].hidden = true
-                    }
+                    properties[name].default = nspData[name] ?? properties[name].default
                 }
+
+                console.info('Please fill in following values')
+                console.warn('Note that password will NOT be stored outside of config.local.json which is a'
+                +' .gitignored file')
+                console.warn('If you don\'t want to store your npm password in config.local.json leave field blank.'+
+                 ' You will have to type it when publishing.')
 
                 const result = await prompt.call(properties);
 
@@ -119,23 +124,19 @@ export async function init(fileDir, contextDir, args) {
                     }
                 }
 
-                let github = isGithub(nspData.NSP_GIT_REPOSITORY_HOMEPAGE)
-
-                console.log(github)
+                let github = isGithub(nspData.NSP_REPOSITORY_REMOTE)
 
                 if (github) {
                     if (!nspData.NSP_ISSUES) {
                         nspData.NSP_ISSUES = generateGithubIssues(github)
                     }
-                    if (!nspData.NSP_REPOSITORY_REMOTE) {
-                        nspData.NSP_REPOSITORY_REMOTE = generateGithubRemote(github)
+                    if (!nspData.NSP_GIT_REPOSITORY_HOMEPAGE) {
+                        nspData.NSP_GIT_REPOSITORY_HOMEPAGE = generateGithubHomepage(github)
                     }
                     if (!nspData.NSP_REPOSITORY_SSH_REMOTE) {
                         nspData.NSP_REPOSITORY_SSH_REMOTE = generateGithubSshRemote(github)
                     }
                 }
-
-                console.log(nspData)
 
                 done(JSON.stringify(nspData, null, "\t"))
 

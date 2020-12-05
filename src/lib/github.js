@@ -5,7 +5,7 @@ export function isGithub(url) {
     return url && (url ?? '').match(githubRegexp)
 }
 
-export function generateGithubRemote(parsedGithubRepoHomepage) {
+export function generateGithubHomepage(parsedGithubRepoHomepage) {
     return parsedGithubRepoHomepage[0].replace(/\/$/, '') + '.git'
 }
 

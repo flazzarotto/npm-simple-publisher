@@ -18,6 +18,8 @@ var _generatePackageJson = require("./generatePackageJson");
 
 var _child_process = require("child_process");
 
+var _arrayCombine = require("./arrayCombine");
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
@@ -43,6 +45,25 @@ var publishOptions = [{
   "short": 'y',
   description: 'Publish without confirm',
   example: "'kc-nps publish --yes' or 'kc-nps publish -y'"
+}, {
+  name: 'commit-message',
+  type: 'string',
+  "short": 'm',
+  description: 'Modify commit message',
+  example: "'kc-nps publish --commit-message=\"This is my ne version !\"' or 'kc-nps publish -m \"new version available\"'"
+}, {
+  name: 'tag-message',
+  type: 'string',
+  "short": 'v',
+  description: 'Modify version message',
+  example: "'kc-nps publish --tag-message=\"This is my ne version !\"' or 'kc-nps publish -v \"new version available\"'"
+}, {
+  name: 'publish-on',
+  type: 'list, string',
+  "short": 'p',
+  "default": ['npm', 'git'],
+  description: 'Publish only on listed package managers - only npm|git available but you\'ll be able to add any ' + 'hook of your own in version 1.3 using config.json\n' + 'Default: npm|git',
+  example: "'kc-nps publish --publish-on=npm --publish-on=git or 'kc-nps -p npm -p git'"
 }];
 var publishMod = {
   mod: 'publish',
@@ -58,22 +79,42 @@ function publish(_x, _x2, _x3, _x4) {
 
 function _publish() {
   _publish = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(fileDir, contextDir, args, previous) {
-    var yes, prompted, prompter, result, response, nspData, publishArgs, readmeData, poweredBy1, poweredBy2, index;
+    var _args$options$commit;
+
+    var platforms, yes, prompted, prompter, result, response, nspData, commitMessage, _args$options$tagMes, tagMessage, publishArgs, readmeData, poweredBy1, poweredBy2, index;
+
     return regeneratorRuntime.wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
-            if (args.options['skip-build']) {
+            // TODO in version 1.3 .filter() must return false if: (no valid hook provided AND !== npm|git)
+            platforms = (args.options['publish-on'] || ['npm', 'git']).filter(function (p) {
+              return p.replace(/\s+/, '').length;
+            });
+
+            if (platforms.length) {
               _context.next = 4;
+              break;
+            }
+
+            _nodeCommandManager.console.error('No package manager to publish on, please provide one at least or leave the option `publish-on`' + ' blank to publish on npm (and git if configured)');
+
+            return _context.abrupt("return");
+
+          case 4:
+            platforms = (0, _arrayCombine.arrayCombine)(platforms, new Array(platforms.length).fill(true));
+
+            if (args.options['skip-build']) {
+              _context.next = 9;
               break;
             }
 
             _nodeCommandManager.console.info('Running build');
 
-            _context.next = 4;
+            _context.next = 9;
             return (0, _build.build)(fileDir, contextDir);
 
-          case 4:
+          case 9:
             yes = args.options.yes;
             prompted = yes || false;
 
@@ -81,68 +122,92 @@ function _publish() {
               version = (0, _nodeCommandManager.updateVersion)(args.options['update-version']);
             }
 
-            prompter = "Are you sure you want to publish your package in version ".concat(version, " ? (yes/no)");
+            prompter = "Are you sure you want to publish your package in version ".concat(version, " on ") + "".concat(Object.keys(platforms).join('|'), "? (yes/no)");
 
-          case 8:
+          case 13:
             if (prompted) {
-              _context.next = 19;
+              _context.next = 24;
               break;
             }
 
-            _context.next = 11;
+            _context.next = 16;
             return _promptAsync["default"].get(prompter);
 
-          case 11:
+          case 16:
             result = _context.sent;
             response = Object.values(result)[0];
 
             if (!(!(yes = response === 'yes') && response !== 'no')) {
-              _context.next = 16;
+              _context.next = 21;
               break;
             }
 
             prompter = 'Please enter `yes` or `no`';
-            return _context.abrupt("continue", 8);
+            return _context.abrupt("continue", 13);
 
-          case 16:
+          case 21:
             prompted = true;
-            _context.next = 8;
+            _context.next = 13;
             break;
 
-          case 19:
+          case 24:
             if (yes) {
-              _context.next = 21;
+              _context.next = 26;
               break;
             }
 
             return _context.abrupt("return");
 
-          case 21:
+          case 26:
             nspData = JSON.parse(_fs["default"].readFileSync(contextDir + 'config.local.json').toString());
-            _context.next = 24;
+            _context.next = 29;
             return (0, _nodeCommandManager.interactiveShell)('npm', ['login'], {
               username: nspData.NSP_USERNAME,
               password: nspData.NSP_PASSWORD,
               emailthisispublic: nspData.NSP_EMAIL
             });
 
-          case 24:
-            if (args.options['update-version']) {
-              nspData.NSP_PACKAGE_VERSION = version;
+          case 29:
+            commitMessage = (_args$options$commit = args.options['commit-message']) !== null && _args$options$commit !== void 0 ? _args$options$commit : "version ".concat(version);
 
-              _fs["default"].writeFileSync(contextDir + 'config.local.json', JSON.stringify(nspData, null, "\t"));
+            if (!platforms.git) {
+              _nodeCommandManager.console.info('Publish on git skipped');
+            } else if (args.options['update-version'] || args.options['commit-message']) {
+              if (args.options['update-version']) {
+                nspData.NSP_PACKAGE_VERSION = version;
 
-              _nodeCommandManager.console.info('Updating version to ' + version);
+                _fs["default"].writeFileSync(contextDir + 'config.local.json', JSON.stringify(nspData, null, "\t"));
 
-              (0, _generatePackageJson.generatePackageJson)(fileDir, contextDir);
+                _nodeCommandManager.console.info('Updating version to ' + version);
+
+                (0, _generatePackageJson.generatePackageJson)(fileDir, contextDir);
+              }
 
               if (nspData.NSP_REPOSITORY_SSH_REMOTE) {
-                _nodeCommandManager.console.info('Pushing new tag to git remote');
+                _nodeCommandManager.console.info("Pushing commit ".concat(commitMessage, " to remote"));
 
-                (0, _child_process.exec)("git add . && git commit -m \"version ".concat(version, "\" && git tag -a v").concat(version, " -m ") + "\"version ".concat(version, "\" && git push && git push --tags"));
+                (0, _child_process.exec)("git add . && git commit -m \"".concat(commitMessage, "\" && git push"));
+
+                if (args.options['update-version']) {
+                  _nodeCommandManager.console.info('Pushing new tag to git remote');
+
+                  tagMessage = (_args$options$tagMes = args.options['tag-message']) !== null && _args$options$tagMes !== void 0 ? _args$options$tagMes : "version ".concat(version);
+                  (0, _child_process.exec)("git tag -a v".concat(version, " -m \"").concat(tagMessage, "\" && git push && git push --tags"));
+                }
               }
+            } // TODO in version 1.3 it should remain **after** other hooks
+
+
+            if (platforms.npm) {
+              _context.next = 34;
+              break;
             }
 
+            _nodeCommandManager.console.info('Publish on npm skipped');
+
+            return _context.abrupt("return");
+
+          case 34:
             publishArgs = ['publish'];
 
             if (!nspData.NSP_PACKAGE_PRIVATE) {
@@ -165,10 +230,10 @@ function _publish() {
 
             _fs["default"].writeFileSync(contextDir + 'README.md', readmeData);
 
-            _context.next = 37;
+            _context.next = 46;
             return (0, _nodeCommandManager.interactiveShell)('npm', publishArgs, null, false);
 
-          case 37:
+          case 46:
           case "end":
             return _context.stop();
         }

@@ -116,13 +116,15 @@ function _init() {
                         }
 
                         _fs["default"].writeFileSync(targetFile, data);
+
+                        _nodeCommandManager.console.warn('Init done. Please ensure that all of `./config.local.json` data is valid.');
                       };
 
                       file = _files[_i];
                       targetFile = contextDir + (file !== 'config.json' ? file : 'config.local.json');
                       sourceData = _data["default"][file];
                       _context.t0 = file;
-                      _context.next = _context.t0 === 'config.json' ? 7 : 32;
+                      _context.next = _context.t0 === 'config.json' ? 7 : 33;
                       break;
 
                     case 7:
@@ -133,23 +135,23 @@ function _init() {
                         actualConfig = JSON.parse(_fs["default"].readFileSync(targetFile).toString());
                       }
 
-                      properties = {};
+                      properties = _data["default"].configProperties;
                       nspData = _objectSpread(_objectSpread({}, defaultConfig), actualConfig);
 
                       for (name in defaultConfig) {
-                        properties[name] = {
-                          "default": (_nspData$name = nspData[name]) !== null && _nspData$name !== void 0 ? _nspData$name : '~'
-                        };
-
-                        if (name === 'NSP_PASSWORD') {
-                          properties[name].hidden = true;
-                        }
+                        properties[name]["default"] = (_nspData$name = nspData[name]) !== null && _nspData$name !== void 0 ? _nspData$name : properties[name]["default"];
                       }
 
-                      _context.next = 15;
+                      _nodeCommandManager.console.info('Please fill in following values');
+
+                      _nodeCommandManager.console.warn('Note that password will NOT be stored outside of config.local.json which is a' + ' .gitignored file');
+
+                      _nodeCommandManager.console.warn('If you don\'t want to store your npm password in config.local.json leave field blank.' + ' You will have to type it when publishing.');
+
+                      _context.next = 18;
                       return prompt.call(properties);
 
-                    case 15:
+                    case 18:
                       result = _context.sent;
                       del = [];
 
@@ -176,17 +178,15 @@ function _init() {
                         }
                       }
 
-                      github = (0, _github.isGithub)(nspData.NSP_GIT_REPOSITORY_HOMEPAGE);
-
-                      _nodeCommandManager.console.log(github);
+                      github = (0, _github.isGithub)(nspData.NSP_REPOSITORY_REMOTE);
 
                       if (github) {
                         if (!nspData.NSP_ISSUES) {
                           nspData.NSP_ISSUES = (0, _github.generateGithubIssues)(github);
                         }
 
-                        if (!nspData.NSP_REPOSITORY_REMOTE) {
-                          nspData.NSP_REPOSITORY_REMOTE = (0, _github.generateGithubRemote)(github);
+                        if (!nspData.NSP_GIT_REPOSITORY_HOMEPAGE) {
+                          nspData.NSP_GIT_REPOSITORY_HOMEPAGE = (0, _github.generateGithubHomepage)(github);
                         }
 
                         if (!nspData.NSP_REPOSITORY_SSH_REMOTE) {
@@ -194,23 +194,21 @@ function _init() {
                         }
                       }
 
-                      _nodeCommandManager.console.log(nspData);
-
                       done(JSON.stringify(nspData, null, "\t"));
                       (0, _generatePackageJson.generatePackageJson)(fileDir, contextDir);
-                      _context.next = 31;
+                      _context.next = 32;
                       return (0, _build.build)(fileDir, contextDir, {
                         license: true
                       });
 
-                    case 31:
-                      return _context.abrupt("break", 34);
-
                     case 32:
-                      done(sourceData);
-                      return _context.abrupt("break", 34);
+                      return _context.abrupt("break", 35);
 
-                    case 34:
+                    case 33:
+                      done(sourceData);
+                      return _context.abrupt("break", 35);
+
+                    case 35:
                     case "end":
                       return _context.stop();
                   }

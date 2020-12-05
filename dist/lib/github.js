@@ -4,7 +4,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.isGithub = isGithub;
-exports.generateGithubRemote = generateGithubRemote;
+exports.generateGithubHomepage = generateGithubHomepage;
 exports.generateGithubIssues = generateGithubIssues;
 exports.generateGithubSshRemote = generateGithubSshRemote;
 var githubRegexp = /^https:\/\/github.com\/([^\\]+)\/([^\\]+)$/; // 1 => username, 2 => repo name
@@ -13,7 +13,7 @@ function isGithub(url) {
   return url && (url !== null && url !== void 0 ? url : '').match(githubRegexp);
 }
 
-function generateGithubRemote(parsedGithubRepoHomepage) {
+function generateGithubHomepage(parsedGithubRepoHomepage) {
   return parsedGithubRepoHomepage[0].replace(/\/$/, '') + '.git';
 }
 

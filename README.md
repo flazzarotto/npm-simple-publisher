@@ -39,7 +39,7 @@ sudo npm install -g @kebab-case/npm-simple-publisher
     "NSP_EMAIL": "your public npm email",
     "NSP_PACKAGE_DESCRIPTION": "your package description",
     "NSP_PACKAGE_KEYWORDS": "comma,separated,keywords",
-    "NSP_PACKAGE_LICENSE": "license to use - default: GPL-3.0-or-later",
+    "NSP_PACKAGE_LICENSE": "license to use - default: MIT",
     "NSP_PACKAGE_VERSION": "default: 1.0.0",
     "NSP_PACKAGE_PRIVATE": "true|false", 
     "NSP_SCOPED_PACKAGE": "true|false: use true to scope package as @username/package-name",
@@ -56,7 +56,10 @@ sudo npm install -g @kebab-case/npm-simple-publisher
   extension:
   https://github.com/spdx/license-list-data/tree/master/text
   
-  P.S. Default package name will be `your-project-name` name, but it can be changed in ```config.local.json```.
+  You shall modify LICENSE file by replacing some generic fields (<year>, <author>, <program>, and so on) by their
+  literal values.
+  
+  P.S. Default package name will be `your-project-name` folder name, but it can be changed in ```config.local.json```.
 * You can now write es6 in your `./src` folder and set up your own settings in `package.json` and `.gitignore`.
 * DO NOT forget to add your fantastic `README.md`!
 * Ready to publish to npm ? Use the `kc-nsp publish` script!
