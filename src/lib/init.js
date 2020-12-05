@@ -67,8 +67,6 @@ export async function init(fileDir, contextDir, args) {
                 console.warn('File ' + file + ' will be replaced with fresh one.')
             }
             fs.writeFileSync(targetFile, data)
-
-            console.warn('Init done. Please ensure that all of `./config.local.json` data is valid.')
         }
 
         switch (file) {
@@ -149,6 +147,7 @@ export async function init(fileDir, contextDir, args) {
                 break
         }
     }
+    console.warn('Init done. Please ensure that all of `./config.local.json` data is valid.')
 }
 
 

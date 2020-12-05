@@ -116,8 +116,6 @@ function _init() {
                         }
 
                         _fs["default"].writeFileSync(targetFile, data);
-
-                        _nodeCommandManager.console.warn('Init done. Please ensure that all of `./config.local.json` data is valid.');
                       };
 
                       file = _files[_i];
@@ -231,6 +229,9 @@ function _init() {
             break;
 
           case 21:
+            _nodeCommandManager.console.warn('Init done. Please ensure that all of `./config.local.json` data is valid.');
+
+          case 22:
           case "end":
             return _context2.stop();
         }
