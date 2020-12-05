@@ -92,6 +92,7 @@ specific one.
 - prompt-async
 - request
 - @kebab-case/node-command-manager
+
 -----------------------------------------
 ## Powered by @kebab-case/npm-simple-publisher
 

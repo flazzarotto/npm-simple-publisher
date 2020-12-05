@@ -120,6 +120,7 @@ publish to npm with only two commands.`
     let index = readmeData.indexOf(poweredBy1)
 
     readmeData = readmeData.substr(0, (index > -1) ? index : readmeData.length )
+        .replace(/\n+$/g,"\n")
 
     readmeData += "\n"+poweredBy1 + poweredBy2
 
