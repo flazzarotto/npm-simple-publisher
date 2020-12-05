@@ -1,3 +1,5 @@
 node_modules
 /config.local.json
-package-lock.json
+/package-lock.json
+/package.bkp.json
+/yarn-error.log
