@@ -43,10 +43,10 @@ export function generatePackageJson(fileDir, contextDir, args) {
         license: nspData.NSP_PACKAGE_LICENSE,
         keywords: nspData.NSP_PACKAGE_KEYWORDS.split(',').map(x => x.replace(/(^\s)|(\s$)/g, '')),
         private: nspData.NSP_PACKAGE_PRIVATE,
-        scripts: packageJsonData.scripts || {
+        scripts: packageJsonData.scripts ?? {
             build: "rm -rf dist && babel src -d dist && chmod +x ./dist/*.js"
         },
-        eslintConfig: packageJsonData.eslintConfig || {
+        eslintConfig: packageJsonData.eslintConfig ?? {
             "root": true,
             "env": {
                 "node": true

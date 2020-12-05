@@ -31,7 +31,7 @@ var packageMod = {
 exports.packageMod = packageMod;
 
 function generatePackageJson(fileDir, contextDir, args) {
-  var _nspData$NSP_SCOPE_NA;
+  var _nspData$NSP_SCOPE_NA, _packageJsonData$scri, _packageJsonData$esli;
 
   var packageJsonFile = contextDir + 'package.json';
 
@@ -61,10 +61,10 @@ function generatePackageJson(fileDir, contextDir, args) {
       return x.replace(/(^\s)|(\s$)/g, '');
     }),
     "private": nspData.NSP_PACKAGE_PRIVATE,
-    scripts: packageJsonData.scripts || {
+    scripts: (_packageJsonData$scri = packageJsonData.scripts) !== null && _packageJsonData$scri !== void 0 ? _packageJsonData$scri : {
       build: "rm -rf dist && babel src -d dist && chmod +x ./dist/*.js"
     },
-    eslintConfig: packageJsonData.eslintConfig || {
+    eslintConfig: (_packageJsonData$esli = packageJsonData.eslintConfig) !== null && _packageJsonData$esli !== void 0 ? _packageJsonData$esli : {
       "root": true,
       "env": {
         "node": true
