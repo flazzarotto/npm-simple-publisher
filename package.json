@@ -1,6 +1,6 @@
 {
 	"name": "@kebab-case/npm-simple-publisher",
-	"version": "1.1.9",
+	"version": "1.1.10",
 	"description": "nodejs command-line script allowing to easily compile and publish both node and es6 compliant code packages to npm.",
 	"author": "kebab-case",
 	"homepage": "https://github.com/flazzarotto/npm-simple-publisher",

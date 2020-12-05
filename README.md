@@ -37,12 +37,12 @@ sudo npm install -g @kebab-case/npm-simple-publisher
     "NSP_USERNAME": "your npm username",
     "NSP_PASSWORD": "your npm password",
     "NSP_EMAIL": "your public npm email",
-    "NSP_PACKAGE_DESCRIPTION": "your packageJson description",
+    "NSP_PACKAGE_DESCRIPTION": "your package description",
     "NSP_PACKAGE_KEYWORDS": "comma,separated,keywords",
     "NSP_PACKAGE_LICENSE": "license to use - default: GPL-3.0-or-later",
     "NSP_PACKAGE_VERSION": "default: 1.0.0",
     "NSP_PACKAGE_PRIVATE": "true|false", 
-    "NSP_SCOPED_PACKAGE": "true|false: use true to scope packageJson as @username/packageJson-name",
+    "NSP_SCOPED_PACKAGE": "true|false: use true to scope package as @username/package-name",
     "NSP_SCOPE_NAME": "scope name - default: @username",
     "NSP_APP_ENTRY_POINT": "app entry point - relative to ./src directory - default: index.js",
     "NSP_REPOSITORY_HOMEPAGE": "full URL to your remote git repo homepage - default: null",
@@ -97,8 +97,28 @@ specific one.
 -----------------------------------------
 ## Powered by @kebab-case/npm-simple-publisher
 
-This package has been brought to you by **[npm-simple-publisher](url=https://www.npmjs.com/package/@kebab-case/npm-simple-publisher)**
+This package has been brought to you by **npm-simple-publisher**
 
 This little nodejs command-line script allows you to easily compile and publish node **and** es6 compliant code 
 packages to npm. Init your project with minimal babel configuration for es6, compile to cjs and 
 publish to npm with only two commands.
+
+Try it now:
+
+```shell script
+sudo apt install yarn
+sudo npm install -g @kebab-case/npm-simple-publisher
+mkdir my_project
+cd my_project
+# getting help about command
+kc-nsp -h # list of command modules
+kc-nsp init -h # and so on
+# getting started
+kc-nsp init -f # create project 
+# ... do things in my_project/src, using proposed build or your own (not npm-friendly)
+kc-nsp publish -t M|m|r # publish new Major / minor version or revision
+```
+
+Basically, that's all!
+
+Find on npm: https://www.npmjs.com/package/@kebab-case/npm-simple-publisher
