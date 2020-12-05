@@ -78,6 +78,17 @@ sudo npm install -g @kebab-case/npm-simple-publisher
   # skip publish confirmation
   kc-nsp publish --yes
   kc-nsp publish -y
+  # override default git commit message
+  kc-nps publish --commit-message="my commit message"
+  kc-nps publish -m "my commit message"
+  # override default git tag message
+  kc-nps publish --tag-message="my tag message"
+  kc-nps publish -v="my tag message"
+  # use custom publish hooks - see detailed help about using hooks here after
+  kc-nps publish --publish-on=hook1 --publish-on=hook2
+  kc-nps publish --p=hook1 --p=hook2
+  # publish a patch of current version instead of new version (required if --update-version not provided)
+  kc-nps publish --patch
   ```
   
 ### PUBLISHING HOOKS

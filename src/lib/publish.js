@@ -5,6 +5,7 @@ import {interactiveShell, updateVersion, getVersion, console} from "@kebab-case/
 import {generatePackageJson} from "./generatePackageJson"
 import {exec} from "child_process"
 import {arrayCombine} from "./arrayCombine";
+import {updateReadme} from "./updateReadme";
 
 let version = getVersion('.')
 
@@ -48,11 +49,16 @@ const publishOptions = [
         name: 'publish-on',
         type: 'list',
         short: 'p',
-        default: ['npm', 'git'],
         description: 'Publish only on listed package managers - only npm|git available but you\'ll be able to add any ' +
             'hook of your own in version 1.3 using config.json\n'
             + 'Default: npm|git',
         example: "'kc-nps publish --publish-on=npm --publish-on=git or 'kc-nps -p npm -p git'"
+    },
+    {
+        name: 'patch',
+        type: 'boolean',
+        description: 'Publish a version patch instead of a new version',
+        example: "'kc-nps publish --patch'"
     },
 
 ]
@@ -109,13 +115,17 @@ export async function publish(fileDir, contextDir, args, previous) {
     let yes = args.options.yes
     let prompted = yes || false
 
+    if (args.options['patch'] && args.options['update-version']) {
+        console.error('--patch option cannot be used along with --update-version ; please choose update OR patch')
+        return
+    }
+
     if (args.options['update-version']) {
         version = updateVersion(args.options['update-version'])
     }
 
-
-    let prompter = `Are you sure you want to publish your package in version ${version} on `
-        + `${Object.keys(platforms).join('|')}? (yes/no)`
+    let prompter = `Are you sure you want to publish your package in ${args.options.patch ? ' patched' : ''} `
+        + `version ${version} on ${Object.keys(platforms).join('|')}? (yes/no)`
 
     while (!prompted) {
         let result = await prompt.get(prompter)
@@ -136,15 +146,18 @@ export async function publish(fileDir, contextDir, args, previous) {
         emailthisispublic: nspData.NSP_EMAIL
     })
 
+    updateReadme(contextDir, nspData)
+
     let commitMessage = args.options['commit-message'] ?? `version ${version}`
 
     if (!platforms.git) {
         console.info('Publish on git skipped')
-    } else if (args.options['update-version'] || args.options['commit-message']) {
-        if (args.options['update-version']) {
-            nspData.NSP_PACKAGE_VERSION = version
+    } else if (args.options['patch'] ||
+        args.options['update-version'] || args.options['commit-message']) {
+        if (args.options['update-version'] || args.options['patch']) {
+            nspData.NSP_PACKAGE_VERSION = version + (args.options['patch'] ? ' ' : '')
             fs.writeFileSync(contextDir + 'config.local.json', JSON.stringify(nspData, null, "\t"))
-            console.info('Updating version to ' + version)
+            console.info((args.options['patch']?'Patching version ':'Updating version to ') + version)
             generatePackageJson(fileDir, contextDir)
         }
         if (nspData.NSP_REPOSITORY_SSH_REMOTE) {
@@ -172,7 +185,7 @@ export async function publish(fileDir, contextDir, args, previous) {
         }
     }
 
-    // TODO in version 1.3 it should remain **after** other hooks
+    // FIXME /!\ must remain after other hooks - or use if
     if (!platforms.npm) {
         console.info('Publish on npm skipped')
         return
@@ -185,54 +198,9 @@ export async function publish(fileDir, contextDir, args, previous) {
 
     console.info(`Ready to publish ${nspData.NSP_PACKAGE_PRIVATE ? 'private' : 'public'} package to npm.`)
 
-    let readmeData
-    try {
-        readmeData = fs.readFileSync(contextDir + 'README.md').toString()
-    } catch (e) {
-        readmeData = `# ${nspData.NSP_PACKAGE_NAME}
-Here be documentation soon`
+    if (args.options.patch) {
+        await interactiveShell('npm', ['version', 'patch'], null, false)
     }
-
-    const poweredBy1 = `
------------------------------------------
-## Powered by @kebab-case/npm-simple-publisher`
-
-    const poweredBy2 = `
-
-This package has been brought to you by **npm-simple-publisher**
-
-This little nodejs command-line script allows you to easily compile and publish node **and** es6 compliant code 
-packages to npm. Init your project with minimal babel configuration for es6, compile to cjs and 
-publish to npm with only two commands.
-
-Try it now:
-
-\`\`\`shell script
-sudo apt install yarn
-sudo npm install -g @kebab-case/npm-simple-publisher
-mkdir my_project
-cd my_project
-# getting help about command
-kc-nsp -h # list of command modules
-kc-nsp init -h # and so on
-# getting started
-kc-nsp init -f # create project 
-# ... do things in my_project/src, using proposed build or your own (not npm-friendly)
-kc-nsp publish -t M|m|r # publish new Major / minor version or revision
-\`\`\`
-
-Basically, that's all!
-
-Find on npm: https://www.npmjs.com/package/@kebab-case/npm-simple-publisher`
-
-    let index = readmeData.indexOf(poweredBy1)
-
-    readmeData = readmeData.substr(0, (index > -1) ? index : readmeData.length)
-        .replace(/\n+$/g, "\n")
-
-    readmeData += "\n" + poweredBy1 + poweredBy2
-
-    fs.writeFileSync(contextDir + 'README.md', readmeData)
 
     await interactiveShell('npm', publishArgs, null, false)
 }
