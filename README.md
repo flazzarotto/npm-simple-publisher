@@ -108,7 +108,7 @@ entries of the original file.
   kc-nps publish --deprecate-older-versions=1 # deprecates all 0.x and 1.x versions (if current version >= 2)
   kc-nps publish --d 3 # deprecates all 0.x-3.x versions (if current version >= 4)
   ```
-  
+   
 ### PUBLISHING HOOKS
 You can define your own publishing hooks, which will be executed after `git push` (if configured) and before
 `npm publish`. Each hook is a command-line of your choice with any arguments you want.
