@@ -148,14 +148,14 @@ export async function publish(fileDir, contextDir, args) {
 
     updateReadme(contextDir, nspData)
 
-    let commitMessage = args.options['commit-message'] ?? `version ${version}`
+    let commitMessage = args.options['commit-message'] ?? `version ${version}` + (args.options['patch'] ? ' patched' : '')
 
     if (!platforms.git) {
         console.info('Publish on git skipped')
     } else if (args.options['patch'] ||
         args.options['update-version'] || args.options['commit-message']) {
         if (args.options['update-version'] || args.options['patch']) {
-            nspData.NSP_PACKAGE_VERSION = version + (args.options['patch'] ? ' ' : '')
+            nspData.NSP_PACKAGE_VERSION = version
             fs.writeFileSync(contextDir + 'config.local.json', JSON.stringify(nspData, null, "\t"))
             console.info((args.options['patch'] ? 'Patching version ' : 'Updating version to ') + version)
             generatePackageJson(fileDir, contextDir)

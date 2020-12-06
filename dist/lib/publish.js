@@ -224,7 +224,7 @@ function _publish() {
 
           case 32:
             (0, _updateReadme.updateReadme)(contextDir, nspData);
-            commitMessage = (_args$options$commit = args.options['commit-message']) !== null && _args$options$commit !== void 0 ? _args$options$commit : "version ".concat(version);
+            commitMessage = (_args$options$commit = args.options['commit-message']) !== null && _args$options$commit !== void 0 ? _args$options$commit : "version ".concat(version) + (args.options['patch'] ? ' patched' : '');
 
             if (platforms.git) {
               _context.next = 38;
@@ -243,7 +243,7 @@ function _publish() {
             }
 
             if (args.options['update-version'] || args.options['patch']) {
-              nspData.NSP_PACKAGE_VERSION = version + (args.options['patch'] ? ' ' : '');
+              nspData.NSP_PACKAGE_VERSION = version;
 
               _fs["default"].writeFileSync(contextDir + 'config.local.json', JSON.stringify(nspData, null, "\t"));
 
