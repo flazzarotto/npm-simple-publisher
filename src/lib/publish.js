@@ -60,6 +60,13 @@ const publishOptions = [
         description: 'Publish a version patch instead of a new version',
         example: "'kc-nps publish --patch'"
     },
+    {
+        name: 'deprecate-older-versions',
+        type: 'string',
+        short: 'd',
+        description: 'Deprecates all older major versions.',
+        example: "'kc-nps publish --deprecate=1' or 'kc-nps publish --d 2'"
+    }
 
 ]
 
@@ -82,7 +89,6 @@ export async function publish(fileDir, contextDir, args) {
     }
     nspData.NSP_HOOKS = {...configuredHooks, ...(nspData.NSP_HOOKS || {})}
 
-    // TODO in version 1.3 .filter() must return false if: (no valid hook provided AND !== npm|git)
     let platforms = (args.options['publish-on'] || ['npm', 'git']).filter(p => {
             if (p === 'npm' || p === 'git') {
                 return true
@@ -140,12 +146,6 @@ export async function publish(fileDir, contextDir, args) {
         return
     }
 
-    await interactiveShell('npm', ['login'], {
-        username: nspData.NSP_USERNAME,
-        password: nspData.NSP_PASSWORD,
-        emailthisispublic: nspData.NSP_EMAIL
-    })
-
     updateReadme(contextDir, nspData)
 
     let commitMessage = args.options['commit-message'] ?? `version ${version}`
@@ -157,7 +157,7 @@ export async function publish(fileDir, contextDir, args) {
         if (args.options['update-version'] || args.options['patch']) {
             nspData.NSP_PACKAGE_VERSION = version + (args.options['patch'] ? ' ' : '')
             fs.writeFileSync(contextDir + 'config.local.json', JSON.stringify(nspData, null, "\t"))
-            console.info((args.options['patch']?'Patching version ':'Updating version to ') + version)
+            console.info((args.options['patch'] ? 'Patching version ' : 'Updating version to ') + version)
             generatePackageJson(fileDir, contextDir)
         }
         if (nspData.NSP_REPOSITORY_SSH_REMOTE) {
@@ -189,6 +189,30 @@ export async function publish(fileDir, contextDir, args) {
     if (!platforms.npm) {
         console.info('Publish on npm skipped')
         return
+    }
+
+    await interactiveShell('npm', ['login'], {
+        username: nspData.NSP_USERNAME,
+        password: nspData.NSP_PASSWORD,
+        emailthisispublic: nspData.NSP_EMAIL
+    })
+
+    let deprecate = args.options['deprecate-older-versions']
+
+    if (deprecate.length) {
+        deprecate = parseInt(deprecate)
+        if (deprecate >= parseInt(version.split('.', 1))) {
+            console.error('Cannot deprecate current or newer version, skipping deprecate.')
+        } else {
+            let packageName = ((nspData.NSP_SCOPED_PACKAGE
+                ? (nspData.NSP_SCOPE_NAME ?? nspData.NSP_USERNAME).replace(/^@+/g,'')
+                :'')+'/'+
+            nspData.NSP_PACKAGE_NAME).replace(/\/+/g,'/')
+            let message = 'Version no longer supported. Please upgrade to @latest'
+            await interactiveShell('npm', ['deprecate', packageName+ '@0-' + deprecate, message])
+        }
+    } else {
+        console.error('No valid version supplied, skipping deprecate command.')
     }
 
     const publishArgs = ['publish']

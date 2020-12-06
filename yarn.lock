@@ -848,10 +848,10 @@
     minimatch "^3.0.4"
     strip-json-comments "^3.1.1"
 
-"@kebab-case/node-command-manager@^1.3.9":
-  version "1.3.9"
-  resolved "https://registry.yarnpkg.com/@kebab-case/node-command-manager/-/node-command-manager-1.3.9.tgz#df739c3d32179ce2bdf2aacc193629d7009e839d"
-  integrity sha512-uh6KRXD0AOsP8pq3VuJJLNxeOEjLc5e/aeQ/dUmlxF+q11fG1oAK6V5L25d/SjbI2PuXQaXxZT0ZNlBcvwoKbA==
+"@kebab-case/node-command-manager@^1.3.10":
+  version "1.3.10"
+  resolved "https://registry.yarnpkg.com/@kebab-case/node-command-manager/-/node-command-manager-1.3.10.tgz#4f7f969f32ad5afe9052f338a8605a483e70af6d"
+  integrity sha512-u/kOQUWqYpSEUgsovnknmCIw6i/Xt8FAotseehXGJIpzTFDjPc0Joyh1ot/3OwsAWnoTC3rTVhZG8LOHQovdVw==
   dependencies:
     argv "^0.0.2"
     core-js "^3.8.0"

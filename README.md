@@ -18,6 +18,19 @@ sudo npm install -g yarn
 sudo npm install -g @kebab-case/npm-simple-publisher
 ```
 
+### Migrate from @1.x
+
+This version adds linter before build and breaking `init` changes options.
+
+* Run `npm i -g @kebab-case/npm-simple-publisher@latest`
+* Backup your `package.json` in `package.bkp.json` and remove the `package.json.script` and `package.json.eslintConfig`
+entries of the original file.
+* Run `kc-nsp init -su` (it will skip any existing file other than `config.local.json` and `package.json`)
+* Add your own scripts / eslintConfig in the newly created entries.
+* Now the `build` and `publish` scripts won't complete if `eslint` fails
+* If you have any other problems please report on the github issues page ; in the meanwhile you can revert
+`package.bkp.json` to `package.json`
+
 ### HOW TO
 
 * First, create your new project `your-project-name` and a sub-folder `your-project-name/src` for your source
@@ -91,6 +104,9 @@ sudo npm install -g @kebab-case/npm-simple-publisher
   kc-nps publish --p=hook1 --p=hook2
   # publish a patch of current version instead of new version (required if --update-version not provided)
   kc-nps publish --patch
+  # deprecate one or more older major versions
+  kc-nps publish --deprecate-older-versions=1 # deprecates all 0.x and 1.x versions (if current version >= 2)
+  kc-nps publish --d 3 # deprecates all 0.x-3.x versions (if current version >= 4)
   ```
   
 ### PUBLISHING HOOKS
