@@ -119,7 +119,7 @@ To do so:
 To get more help about `interactiveShell`, please visit https://www.npmjs.com/package/@kebab-case/node-command-manager#interactive-shell
 Note that you can define hooks with blank / undefined entries (like passwords), so you can version it; if you do so,
 you will be prompted values for these.
-3. Don't modify the null field if you don't exactly now what you are doing
+3. Don't modify the null field if you don't exactly know what you are doing
 4. `prompt_questions` and `hidden_fields` can use regex syntax to match your command prompt.
 5. Use `kc-nps publish -p hook-name1 -p hook-name2 ...` to use your hooks. If you do so, you will have
 to specify **every** hook you want to use, even `git` and `npm`, or they'll simply be skipped.
