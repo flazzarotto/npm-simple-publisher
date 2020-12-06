@@ -84,11 +84,6 @@ var publishOptions = [{
   description: 'Publish only on listed package managers - only npm|git available but you\'ll be able to add any ' + 'hook of your own in version 1.3 using config.json\n' + 'Default: npm|git',
   example: "'kc-nps publish --publish-on=npm --publish-on=git or 'kc-nps -p npm -p git'"
 }, {
-  name: 'patch',
-  type: 'boolean',
-  description: 'Publish a version patch instead of a new version',
-  example: "'kc-nps publish --patch'"
-}, {
   name: 'deprecate-older-versions',
   type: 'string',
   "short": 'd',
@@ -172,73 +167,63 @@ function _publish() {
             yes = args.options.yes;
             prompted = yes || false;
 
-            if (!(args.options['patch'] && args.options['update-version'])) {
-              _context.next = 17;
-              break;
-            }
-
-            _nodeCommandManager.console.error('--patch option cannot be used along with --update-version ; please choose update OR patch');
-
-            return _context.abrupt("return");
-
-          case 17:
             if (args.options['update-version']) {
               version = (0, _nodeCommandManager.updateVersion)(args.options['update-version'], '.');
             }
 
-            prompter = "Are you sure you want to publish your package in ".concat(args.options.patch ? ' patched' : '', " ") + "version ".concat(version, " on ").concat(Object.keys(platforms).join('|'), "? (yes/no)");
+            prompter = "Are you sure you want to publish your package in : ''} " + "version ".concat(version, " on ").concat(Object.keys(platforms).join('|'), "? (yes/no)");
 
-          case 19:
+          case 16:
             if (prompted) {
-              _context.next = 30;
-              break;
-            }
-
-            _context.next = 22;
-            return _promptAsync["default"].get(prompter);
-
-          case 22:
-            result = _context.sent;
-            response = Object.values(result)[0];
-
-            if (!(!(yes = response === 'yes') && response !== 'no')) {
               _context.next = 27;
               break;
             }
 
-            prompter = 'Please enter `yes` or `no`';
-            return _context.abrupt("continue", 19);
-
-          case 27:
-            prompted = true;
             _context.next = 19;
+            return _promptAsync["default"].get(prompter);
+
+          case 19:
+            result = _context.sent;
+            response = Object.values(result)[0];
+
+            if (!(!(yes = response === 'yes') && response !== 'no')) {
+              _context.next = 24;
+              break;
+            }
+
+            prompter = 'Please enter `yes` or `no`';
+            return _context.abrupt("continue", 16);
+
+          case 24:
+            prompted = true;
+            _context.next = 16;
             break;
 
-          case 30:
+          case 27:
             if (yes) {
-              _context.next = 32;
+              _context.next = 29;
               break;
             }
 
             return _context.abrupt("return");
 
-          case 32:
+          case 29:
             (0, _updateReadme.updateReadme)(contextDir, nspData);
-            commitMessage = (_args$options$commit = args.options['commit-message']) !== null && _args$options$commit !== void 0 ? _args$options$commit : "version ".concat(version) + (args.options['patch'] ? ' patched' : '');
+            commitMessage = (_args$options$commit = args.options['commit-message']) !== null && _args$options$commit !== void 0 ? _args$options$commit : "version ".concat(version);
 
             if (platforms.git) {
-              _context.next = 38;
+              _context.next = 35;
               break;
             }
 
             _nodeCommandManager.console.info('Publish on git skipped');
 
-            _context.next = 49;
+            _context.next = 46;
             break;
 
-          case 38:
-            if (!(args.options['patch'] || args.options['update-version'] || args.options['commit-message'])) {
-              _context.next = 49;
+          case 35:
+            if (!(args.options['update-version'] || args.options['commit-message'])) {
+              _context.next = 46;
               break;
             }
 
@@ -247,78 +232,78 @@ function _publish() {
 
               _fs["default"].writeFileSync(contextDir + 'config.local.json', JSON.stringify(nspData, null, "\t"));
 
-              _nodeCommandManager.console.info((args.options['patch'] ? 'Patching version ' : 'Updating version to ') + version);
+              _nodeCommandManager.console.info('Updating version to ' + version);
 
               (0, _generatePackageJson.generatePackageJson)(fileDir, contextDir);
             }
 
             if (!nspData.NSP_REPOSITORY_SSH_REMOTE) {
-              _context.next = 49;
+              _context.next = 46;
               break;
             }
 
             _nodeCommandManager.console.info("Pushing commit ".concat(commitMessage, " to remote"));
 
-            _context.next = 44;
+            _context.next = 41;
             return (0, _child_process.exec)("git add . && git commit -m \"".concat(commitMessage, "\" && git push"));
 
-          case 44:
+          case 41:
             if (!args.options['update-version']) {
-              _context.next = 49;
+              _context.next = 46;
               break;
             }
 
             _nodeCommandManager.console.info('Pushing new tag to git remote');
 
             tagMessage = (_args$options$tagMes = args.options['tag-message']) !== null && _args$options$tagMes !== void 0 ? _args$options$tagMes : "version ".concat(version);
-            _context.next = 49;
+            _context.next = 46;
             return (0, _child_process.exec)("git tag -a v".concat(version, " -m \"").concat(tagMessage, "\" && git push && git push --tags"));
 
-          case 49:
+          case 46:
             _context.t0 = regeneratorRuntime.keys(nspData.NSP_HOOKS);
 
-          case 50:
+          case 47:
             if ((_context.t1 = _context.t0()).done) {
-              _context.next = 67;
+              _context.next = 64;
               break;
             }
 
             hookName = _context.t1.value;
-            _context.prev = 52;
+            _context.prev = 49;
 
             if (platforms[hookName]) {
-              _context.next = 56;
+              _context.next = 53;
               break;
             }
 
             _nodeCommandManager.console.warn("Publishing to ".concat(hookName, " skipped."));
 
-            return _context.abrupt("continue", 50);
+            return _context.abrupt("continue", 47);
 
-          case 56:
+          case 53:
             _nodeCommandManager.console.info("Publishing to ".concat(hookName, "..."));
 
             hook = nspData.NSP_HOOKS[hookName];
-            _context.next = 60;
+            _context.next = 57;
             return _nodeCommandManager.interactiveShell.apply(void 0, _toConsumableArray(hook));
 
-          case 60:
-            _context.next = 65;
+          case 57:
+            _context.next = 62;
             break;
 
-          case 62:
-            _context.prev = 62;
-            _context.t2 = _context["catch"](52);
+          case 59:
+            _context.prev = 59;
+            _context.t2 = _context["catch"](49);
 
             _nodeCommandManager.console.error(_context.t2);
 
-          case 65:
-            _context.next = 50;
+          case 62:
+            _context.next = 47;
             break;
 
-          case 67:
+          case 64:
             if (platforms.npm) {
-              _context.next = 70;
+              _context.next = 67;
               break;
             }
 
@@ -326,15 +311,15 @@ function _publish() {
 
             return _context.abrupt("return");
 
-          case 70:
-            _context.next = 72;
+          case 67:
+            _context.next = 69;
             return (0, _nodeCommandManager.interactiveShell)('npm', ['login'], {
               username: nspData.NSP_USERNAME,
               password: nspData.NSP_PASSWORD,
               emailthisispublic: nspData.NSP_EMAIL
             });
 
-          case 72:
+          case 69:
             publishArgs = ['publish'];
 
             if (!nspData.NSP_PACKAGE_PRIVATE) {
@@ -343,65 +328,52 @@ function _publish() {
 
             _nodeCommandManager.console.info("Ready to publish ".concat(nspData.NSP_PACKAGE_PRIVATE ? 'private' : 'public', " package to npm."));
 
-            if (!args.options.patch) {
-              _context.next = 80;
-              break;
-            }
-
-            _context.next = 78;
-            return (0, _nodeCommandManager.interactiveShell)('npm', ['version', 'patch'], null, false);
-
-          case 78:
-            _context.next = 82;
-            break;
-
-          case 80:
-            _context.next = 82;
+            _context.next = 74;
             return (0, _nodeCommandManager.interactiveShell)('npm', publishArgs, null, false);
 
-          case 82:
+          case 74:
             deprecate = args.options['deprecate-older-versions'];
 
             if (!deprecate.length) {
-              _context.next = 97;
+              _context.next = 89;
               break;
             }
 
             deprecate = parseInt(deprecate);
 
             if (!(deprecate >= parseInt(version.split('.', 1)))) {
-              _context.next = 89;
+              _context.next = 81;
               break;
             }
 
             _nodeCommandManager.console.error('Cannot deprecate current or newer version, skipping deprecate.');
 
-            _context.next = 95;
+            _context.next = 87;
+            break;
+
+          case 81:
+            packageName = ((nspData.NSP_SCOPED_PACKAGE ? ((_nspData$NSP_SCOPE_NA = nspData.NSP_SCOPE_NAME) !== null && _nspData$NSP_SCOPE_NA !== void 0 ? _nspData$NSP_SCOPE_NA : nspData.NSP_USERNAME).replace(/^@+/g, '') : '') + '/' + nspData.NSP_PACKAGE_NAME).replace(/\/+/g, '/');
+            message = 'Version no longer supported. Please upgrade to @latest';
+            _context.next = 85;
+            return (0, _nodeCommandManager.interactiveShell)('npm', ['deprecate', packageName + '@0-' + deprecate, message]);
+
+          case 85:
+            _context.next = 87;
+            return (0, _nodeCommandManager.interactiveShell)('npm', ['deprecate', packageName + '@1-' + deprecate, message]);
+
+          case 87:
+            _context.next = 90;
             break;
 
           case 89:
-            packageName = ((nspData.NSP_SCOPED_PACKAGE ? ((_nspData$NSP_SCOPE_NA = nspData.NSP_SCOPE_NAME) !== null && _nspData$NSP_SCOPE_NA !== void 0 ? _nspData$NSP_SCOPE_NA : nspData.NSP_USERNAME).replace(/^@+/g, '') : '') + '/' + nspData.NSP_PACKAGE_NAME).replace(/\/+/g, '/');
-            message = 'Version no longer supported. Please upgrade to @latest';
-            _context.next = 93;
-            return (0, _nodeCommandManager.interactiveShell)('npm', ['deprecate', packageName + '@0-' + deprecate, message]);
-
-          case 93:
-            _context.next = 95;
-            return (0, _nodeCommandManager.interactiveShell)('npm', ['deprecate', packageName + '@1-' + deprecate, message]);
-
-          case 95:
-            _context.next = 98;
-            break;
-
-          case 97:
             _nodeCommandManager.console.error('No valid version supplied, skipping deprecate command.');
 
-          case 98:
+          case 90:
           case "end":
             return _context.stop();
         }
       }
-    }, _callee, null, [[52, 62]]);
+    }, _callee, null, [[49, 59]]);
   }));
   return _publish.apply(this, arguments);
 }

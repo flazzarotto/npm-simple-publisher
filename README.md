@@ -102,11 +102,7 @@ entries of the original file.
   # use custom publish hooks - see detailed help about using hooks here after
   kc-nps publish --publish-on=hook1 --publish-on=hook2
   kc-nps publish --p=hook1 --p=hook2
-  # publish a patch of current version instead of new version (required if --update-version not provided)
-  kc-nps publish --patch
-  # deprecate one or more older major versions
-  kc-nps publish --deprecate-older-versions=1 # deprecates all 0.x and 1.x versions (if current version >= 2)
-  kc-nps publish --d 3 # deprecates all 0.x-3.x versions (if current version >= 4)
+  # deprecate one or more older major versions - in development
   ```
    
 ### PUBLISHING HOOKS

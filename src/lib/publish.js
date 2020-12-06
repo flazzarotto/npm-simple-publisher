@@ -55,12 +55,6 @@ const publishOptions = [
         example: "'kc-nps publish --publish-on=npm --publish-on=git or 'kc-nps -p npm -p git'"
     },
     {
-        name: 'patch',
-        type: 'boolean',
-        description: 'Publish a version patch instead of a new version',
-        example: "'kc-nps publish --patch'"
-    },
-    {
         name: 'deprecate-older-versions',
         type: 'string',
         short: 'd',
@@ -121,16 +115,11 @@ export async function publish(fileDir, contextDir, args) {
     let yes = args.options.yes
     let prompted = yes || false
 
-    if (args.options['patch'] && args.options['update-version']) {
-        console.error('--patch option cannot be used along with --update-version ; please choose update OR patch')
-        return
-    }
-
     if (args.options['update-version']) {
         version = updateVersion(args.options['update-version'], '.')
     }
 
-    let prompter = `Are you sure you want to publish your package in ${args.options.patch ? ' patched' : ''} `
+    let prompter = `Are you sure you want to publish your package in : ''} `
         + `version ${version} on ${Object.keys(platforms).join('|')}? (yes/no)`
 
     while (!prompted) {
@@ -148,16 +137,15 @@ export async function publish(fileDir, contextDir, args) {
 
     updateReadme(contextDir, nspData)
 
-    let commitMessage = args.options['commit-message'] ?? `version ${version}` + (args.options['patch'] ? ' patched' : '')
+    let commitMessage = args.options['commit-message'] ?? `version ${version}`
 
     if (!platforms.git) {
         console.info('Publish on git skipped')
-    } else if (args.options['patch'] ||
-        args.options['update-version'] || args.options['commit-message']) {
+    } else if (args.options['update-version'] || args.options['commit-message']) {
         if (args.options['update-version'] || args.options['patch']) {
             nspData.NSP_PACKAGE_VERSION = version
             fs.writeFileSync(contextDir + 'config.local.json', JSON.stringify(nspData, null, "\t"))
-            console.info((args.options['patch'] ? 'Patching version ' : 'Updating version to ') + version)
+            console.info('Updating version to ' + version)
             generatePackageJson(fileDir, contextDir)
         }
         if (nspData.NSP_REPOSITORY_SSH_REMOTE) {
@@ -205,13 +193,8 @@ export async function publish(fileDir, contextDir, args) {
 
     console.info(`Ready to publish ${nspData.NSP_PACKAGE_PRIVATE ? 'private' : 'public'} package to npm.`)
 
-    if (args.options.patch) {
-        await interactiveShell('npm', ['version', 'patch'], null, false)
-    }
-    else {
-        await interactiveShell('npm', publishArgs, null, false)
-    }
-    
+    await interactiveShell('npm', publishArgs, null, false)
+
     let deprecate = args.options['deprecate-older-versions']
 
     if (deprecate.length) {
