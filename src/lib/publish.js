@@ -197,7 +197,7 @@ export async function publish(fileDir, contextDir, args) {
 
     let deprecate = args.options['deprecate-older-versions']
 
-    if (deprecate.length) {
+    if (deprecate && deprecate.length) {
         deprecate = parseInt(deprecate)
         if (deprecate >= parseInt(version.split('.', 1))) {
             console.error('Cannot deprecate current or newer version, skipping deprecate.')

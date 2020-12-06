@@ -334,7 +334,7 @@ function _publish() {
           case 74:
             deprecate = args.options['deprecate-older-versions'];
 
-            if (!deprecate.length) {
+            if (!(deprecate && deprecate.length)) {
               _context.next = 89;
               break;
             }
