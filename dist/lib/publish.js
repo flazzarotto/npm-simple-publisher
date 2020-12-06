@@ -338,7 +338,7 @@ function _publish() {
             deprecate = args.options['deprecate-older-versions'];
 
             if (!deprecate.length) {
-              _context.next = 85;
+              _context.next = 87;
               break;
             }
 
@@ -351,7 +351,7 @@ function _publish() {
 
             _nodeCommandManager.console.error('Cannot deprecate current or newer version, skipping deprecate.');
 
-            _context.next = 83;
+            _context.next = 85;
             break;
 
           case 79:
@@ -361,13 +361,17 @@ function _publish() {
             return (0, _nodeCommandManager.interactiveShell)('npm', ['deprecate', packageName + '@0-' + deprecate, message]);
 
           case 83:
-            _context.next = 86;
-            break;
+            _context.next = 85;
+            return (0, _nodeCommandManager.interactiveShell)('npm', ['deprecate', packageName + '@1-' + deprecate, message]);
 
           case 85:
+            _context.next = 88;
+            break;
+
+          case 87:
             _nodeCommandManager.console.error('No valid version supplied, skipping deprecate command.');
 
-          case 86:
+          case 88:
             publishArgs = ['publish'];
 
             if (!nspData.NSP_PACKAGE_PRIVATE) {
@@ -377,18 +381,18 @@ function _publish() {
             _nodeCommandManager.console.info("Ready to publish ".concat(nspData.NSP_PACKAGE_PRIVATE ? 'private' : 'public', " package to npm."));
 
             if (!args.options.patch) {
-              _context.next = 92;
+              _context.next = 94;
               break;
             }
 
-            _context.next = 92;
+            _context.next = 94;
             return (0, _nodeCommandManager.interactiveShell)('npm', ['version', 'patch'], null, false);
 
-          case 92:
-            _context.next = 94;
+          case 94:
+            _context.next = 96;
             return (0, _nodeCommandManager.interactiveShell)('npm', publishArgs, null, false);
 
-          case 94:
+          case 96:
           case "end":
             return _context.stop();
         }

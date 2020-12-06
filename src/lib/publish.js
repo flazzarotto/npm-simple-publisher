@@ -210,6 +210,7 @@ export async function publish(fileDir, contextDir, args) {
             nspData.NSP_PACKAGE_NAME).replace(/\/+/g,'/')
             let message = 'Version no longer supported. Please upgrade to @latest'
             await interactiveShell('npm', ['deprecate', packageName+ '@0-' + deprecate, message])
+            await interactiveShell('npm', ['deprecate', packageName+ '@1-' + deprecate, message])
         }
     } else {
         console.error('No valid version supplied, skipping deprecate command.')
