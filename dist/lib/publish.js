@@ -111,7 +111,7 @@ function _publish() {
   _publish = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(fileDir, contextDir, args) {
     var _args$options$commit;
 
-    var nspData, configuredHooks, platforms, yes, prompted, prompter, result, response, commitMessage, _args$options$tagMes, tagMessage, hookName, hook, deprecate, _nspData$NSP_SCOPE_NA, packageName, message, publishArgs;
+    var nspData, configuredHooks, platforms, yes, prompted, prompter, result, response, commitMessage, _args$options$tagMes, tagMessage, hookName, hook, publishArgs, deprecate, _nspData$NSP_SCOPE_NA, packageName, message;
 
     return regeneratorRuntime.wrap(function _callee$(_context) {
       while (1) {
@@ -335,43 +335,6 @@ function _publish() {
             });
 
           case 72:
-            deprecate = args.options['deprecate-older-versions'];
-
-            if (!deprecate.length) {
-              _context.next = 87;
-              break;
-            }
-
-            deprecate = parseInt(deprecate);
-
-            if (!(deprecate >= parseInt(version.split('.', 1)))) {
-              _context.next = 79;
-              break;
-            }
-
-            _nodeCommandManager.console.error('Cannot deprecate current or newer version, skipping deprecate.');
-
-            _context.next = 85;
-            break;
-
-          case 79:
-            packageName = ((nspData.NSP_SCOPED_PACKAGE ? ((_nspData$NSP_SCOPE_NA = nspData.NSP_SCOPE_NAME) !== null && _nspData$NSP_SCOPE_NA !== void 0 ? _nspData$NSP_SCOPE_NA : nspData.NSP_USERNAME).replace(/^@+/g, '') : '') + '/' + nspData.NSP_PACKAGE_NAME).replace(/\/+/g, '/');
-            message = 'Version no longer supported. Please upgrade to @latest';
-            _context.next = 83;
-            return (0, _nodeCommandManager.interactiveShell)('npm', ['deprecate', packageName + '@0-' + deprecate, message]);
-
-          case 83:
-            _context.next = 85;
-            return (0, _nodeCommandManager.interactiveShell)('npm', ['deprecate', packageName + '@1-' + deprecate, message]);
-
-          case 85:
-            _context.next = 88;
-            break;
-
-          case 87:
-            _nodeCommandManager.console.error('No valid version supplied, skipping deprecate command.');
-
-          case 88:
             publishArgs = ['publish'];
 
             if (!nspData.NSP_PACKAGE_PRIVATE) {
@@ -381,16 +344,53 @@ function _publish() {
             _nodeCommandManager.console.info("Ready to publish ".concat(nspData.NSP_PACKAGE_PRIVATE ? 'private' : 'public', " package to npm."));
 
             if (!args.options.patch) {
-              _context.next = 94;
+              _context.next = 78;
               break;
             }
 
-            _context.next = 94;
+            _context.next = 78;
             return (0, _nodeCommandManager.interactiveShell)('npm', ['version', 'patch'], null, false);
 
-          case 94:
-            _context.next = 96;
+          case 78:
+            _context.next = 80;
             return (0, _nodeCommandManager.interactiveShell)('npm', publishArgs, null, false);
+
+          case 80:
+            deprecate = args.options['deprecate-older-versions'];
+
+            if (!deprecate.length) {
+              _context.next = 95;
+              break;
+            }
+
+            deprecate = parseInt(deprecate);
+
+            if (!(deprecate >= parseInt(version.split('.', 1)))) {
+              _context.next = 87;
+              break;
+            }
+
+            _nodeCommandManager.console.error('Cannot deprecate current or newer version, skipping deprecate.');
+
+            _context.next = 93;
+            break;
+
+          case 87:
+            packageName = ((nspData.NSP_SCOPED_PACKAGE ? ((_nspData$NSP_SCOPE_NA = nspData.NSP_SCOPE_NAME) !== null && _nspData$NSP_SCOPE_NA !== void 0 ? _nspData$NSP_SCOPE_NA : nspData.NSP_USERNAME).replace(/^@+/g, '') : '') + '/' + nspData.NSP_PACKAGE_NAME).replace(/\/+/g, '/');
+            message = 'Version no longer supported. Please upgrade to @latest';
+            _context.next = 91;
+            return (0, _nodeCommandManager.interactiveShell)('npm', ['deprecate', packageName + '@0-' + deprecate, message]);
+
+          case 91:
+            _context.next = 93;
+            return (0, _nodeCommandManager.interactiveShell)('npm', ['deprecate', packageName + '@1-' + deprecate, message]);
+
+          case 93:
+            _context.next = 96;
+            break;
+
+          case 95:
+            _nodeCommandManager.console.error('No valid version supplied, skipping deprecate command.');
 
           case 96:
           case "end":

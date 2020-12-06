@@ -197,6 +197,22 @@ export async function publish(fileDir, contextDir, args) {
         emailthisispublic: nspData.NSP_EMAIL
     })
 
+
+    const publishArgs = ['publish']
+    if (!nspData.NSP_PACKAGE_PRIVATE) {
+        publishArgs.push('--access=public')
+    }
+
+    console.info(`Ready to publish ${nspData.NSP_PACKAGE_PRIVATE ? 'private' : 'public'} package to npm.`)
+
+    if (args.options.patch) {
+        await interactiveShell('npm', ['version', 'patch'], null, false)
+    }
+
+    await interactiveShell('npm', publishArgs, null, false)
+
+
+
     let deprecate = args.options['deprecate-older-versions']
 
     if (deprecate.length) {
@@ -216,16 +232,4 @@ export async function publish(fileDir, contextDir, args) {
         console.error('No valid version supplied, skipping deprecate command.')
     }
 
-    const publishArgs = ['publish']
-    if (!nspData.NSP_PACKAGE_PRIVATE) {
-        publishArgs.push('--access=public')
-    }
-
-    console.info(`Ready to publish ${nspData.NSP_PACKAGE_PRIVATE ? 'private' : 'public'} package to npm.`)
-
-    if (args.options.patch) {
-        await interactiveShell('npm', ['version', 'patch'], null, false)
-    }
-
-    await interactiveShell('npm', publishArgs, null, false)
 }
