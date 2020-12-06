@@ -208,11 +208,10 @@ export async function publish(fileDir, contextDir, args) {
     if (args.options.patch) {
         await interactiveShell('npm', ['version', 'patch'], null, false)
     }
-
-    await interactiveShell('npm', publishArgs, null, false)
-
-
-
+    else {
+        await interactiveShell('npm', publishArgs, null, false)
+    }
+    
     let deprecate = args.options['deprecate-older-versions']
 
     if (deprecate.length) {
