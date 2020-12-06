@@ -97,12 +97,12 @@ var publishMod = {
 };
 exports.publishMod = publishMod;
 
-function publish(_x, _x2, _x3, _x4) {
+function publish(_x, _x2, _x3) {
   return _publish.apply(this, arguments);
 }
 
 function _publish() {
-  _publish = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(fileDir, contextDir, args, previous) {
+  _publish = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(fileDir, contextDir, args) {
     var _args$options$commit;
 
     var nspData, configuredHooks, platforms, yes, prompted, prompter, result, response, commitMessage, _args$options$tagMes, tagMessage, hookName, hook, publishArgs;
@@ -178,7 +178,7 @@ function _publish() {
 
           case 17:
             if (args.options['update-version']) {
-              version = (0, _nodeCommandManager.updateVersion)(args.options['update-version']);
+              version = (0, _nodeCommandManager.updateVersion)(args.options['update-version'], '.');
             }
 
             prompter = "Are you sure you want to publish your package in ".concat(args.options.patch ? ' patched' : '', " ") + "version ".concat(version, " on ").concat(Object.keys(platforms).join('|'), "? (yes/no)");
@@ -229,77 +229,99 @@ function _publish() {
             (0, _updateReadme.updateReadme)(contextDir, nspData);
             commitMessage = (_args$options$commit = args.options['commit-message']) !== null && _args$options$commit !== void 0 ? _args$options$commit : "version ".concat(version);
 
-            if (!platforms.git) {
-              _nodeCommandManager.console.info('Publish on git skipped');
-            } else if (args.options['patch'] || args.options['update-version'] || args.options['commit-message']) {
-              if (args.options['update-version'] || args.options['patch']) {
-                nspData.NSP_PACKAGE_VERSION = version + (args.options['patch'] ? ' ' : '');
-
-                _fs["default"].writeFileSync(contextDir + 'config.local.json', JSON.stringify(nspData, null, "\t"));
-
-                _nodeCommandManager.console.info((args.options['patch'] ? 'Patching version ' : 'Updating version to ') + version);
-
-                (0, _generatePackageJson.generatePackageJson)(fileDir, contextDir);
-              }
-
-              if (nspData.NSP_REPOSITORY_SSH_REMOTE) {
-                _nodeCommandManager.console.info("Pushing commit ".concat(commitMessage, " to remote"));
-
-                (0, _child_process.exec)("git add . && git commit -m \"".concat(commitMessage, "\" && git push"));
-
-                if (args.options['update-version']) {
-                  _nodeCommandManager.console.info('Pushing new tag to git remote');
-
-                  tagMessage = (_args$options$tagMes = args.options['tag-message']) !== null && _args$options$tagMes !== void 0 ? _args$options$tagMes : "version ".concat(version);
-                  (0, _child_process.exec)("git tag -a v".concat(version, " -m \"").concat(tagMessage, "\" && git push && git push --tags"));
-                }
-              }
+            if (platforms.git) {
+              _context.next = 40;
+              break;
             }
 
+            _nodeCommandManager.console.info('Publish on git skipped');
+
+            _context.next = 51;
+            break;
+
+          case 40:
+            if (!(args.options['patch'] || args.options['update-version'] || args.options['commit-message'])) {
+              _context.next = 51;
+              break;
+            }
+
+            if (args.options['update-version'] || args.options['patch']) {
+              nspData.NSP_PACKAGE_VERSION = version + (args.options['patch'] ? ' ' : '');
+
+              _fs["default"].writeFileSync(contextDir + 'config.local.json', JSON.stringify(nspData, null, "\t"));
+
+              _nodeCommandManager.console.info((args.options['patch'] ? 'Patching version ' : 'Updating version to ') + version);
+
+              (0, _generatePackageJson.generatePackageJson)(fileDir, contextDir);
+            }
+
+            if (!nspData.NSP_REPOSITORY_SSH_REMOTE) {
+              _context.next = 51;
+              break;
+            }
+
+            _nodeCommandManager.console.info("Pushing commit ".concat(commitMessage, " to remote"));
+
+            _context.next = 46;
+            return (0, _child_process.exec)("git add . && git commit -m \"".concat(commitMessage, "\" && git push"));
+
+          case 46:
+            if (!args.options['update-version']) {
+              _context.next = 51;
+              break;
+            }
+
+            _nodeCommandManager.console.info('Pushing new tag to git remote');
+
+            tagMessage = (_args$options$tagMes = args.options['tag-message']) !== null && _args$options$tagMes !== void 0 ? _args$options$tagMes : "version ".concat(version);
+            _context.next = 51;
+            return (0, _child_process.exec)("git tag -a v".concat(version, " -m \"").concat(tagMessage, "\" && git push && git push --tags"));
+
+          case 51:
             _context.t0 = regeneratorRuntime.keys(nspData.NSP_HOOKS);
 
-          case 38:
+          case 52:
             if ((_context.t1 = _context.t0()).done) {
-              _context.next = 55;
+              _context.next = 69;
               break;
             }
 
             hookName = _context.t1.value;
-            _context.prev = 40;
+            _context.prev = 54;
 
             if (platforms[hookName]) {
-              _context.next = 44;
+              _context.next = 58;
               break;
             }
 
             _nodeCommandManager.console.warn("Publishing to ".concat(hookName, " skipped."));
 
-            return _context.abrupt("continue", 38);
+            return _context.abrupt("continue", 52);
 
-          case 44:
+          case 58:
             _nodeCommandManager.console.info("Publishing to ".concat(hookName, "..."));
 
             hook = nspData.NSP_HOOKS[hookName];
-            _context.next = 48;
+            _context.next = 62;
             return _nodeCommandManager.interactiveShell.apply(void 0, _toConsumableArray(hook));
 
-          case 48:
-            _context.next = 53;
+          case 62:
+            _context.next = 67;
             break;
 
-          case 50:
-            _context.prev = 50;
-            _context.t2 = _context["catch"](40);
+          case 64:
+            _context.prev = 64;
+            _context.t2 = _context["catch"](54);
 
             _nodeCommandManager.console.error(_context.t2);
 
-          case 53:
-            _context.next = 38;
+          case 67:
+            _context.next = 52;
             break;
 
-          case 55:
+          case 69:
             if (platforms.npm) {
-              _context.next = 58;
+              _context.next = 72;
               break;
             }
 
@@ -307,7 +329,7 @@ function _publish() {
 
             return _context.abrupt("return");
 
-          case 58:
+          case 72:
             publishArgs = ['publish'];
 
             if (!nspData.NSP_PACKAGE_PRIVATE) {
@@ -317,23 +339,23 @@ function _publish() {
             _nodeCommandManager.console.info("Ready to publish ".concat(nspData.NSP_PACKAGE_PRIVATE ? 'private' : 'public', " package to npm."));
 
             if (!args.options.patch) {
-              _context.next = 64;
+              _context.next = 78;
               break;
             }
 
-            _context.next = 64;
+            _context.next = 78;
             return (0, _nodeCommandManager.interactiveShell)('npm', ['version', 'patch'], null, false);
 
-          case 64:
-            _context.next = 66;
+          case 78:
+            _context.next = 80;
             return (0, _nodeCommandManager.interactiveShell)('npm', publishArgs, null, false);
 
-          case 66:
+          case 80:
           case "end":
             return _context.stop();
         }
       }
-    }, _callee, null, [[40, 50]]);
+    }, _callee, null, [[54, 64]]);
   }));
   return _publish.apply(this, arguments);
 }

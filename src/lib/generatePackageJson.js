@@ -11,7 +11,7 @@ export const packageMod = {
     exec: generatePackageJson
 }
 
-export function generatePackageJson(fileDir, contextDir, args) {
+export function generatePackageJson(fileDir, contextDir) {
 
     let packageJsonFile = contextDir + 'package.json'
 
@@ -20,6 +20,7 @@ export function generatePackageJson(fileDir, contextDir, args) {
     let packageJsonData
     try {
         packageJsonData = fs.readFileSync(packageJsonFile).toString()
+        console.warn('Updating package.json')
     } catch (e) {
         console.warn('Creating a new package.json')
         packageJsonData = '{}'
@@ -30,8 +31,10 @@ export function generatePackageJson(fileDir, contextDir, args) {
         ...JSON.parse(fs.readFileSync('config.local.json').toString())
     }
 
+    packageJsonData = JSON.parse(packageJsonData)
+
     packageJsonData = {
-        ...JSON.parse(packageJsonData),
+        ...packageJsonData,
         name: (nspData.NSP_SCOPED_PACKAGE ? (
             '@' + (nspData.NSP_SCOPE_NAME ?? nspData.NSP_USERNAME).replace(/(^@)|(\/$)/g, '') + '/'
         ) : '') + nspData.NSP_PACKAGE_NAME,
@@ -44,19 +47,20 @@ export function generatePackageJson(fileDir, contextDir, args) {
         keywords: nspData.NSP_PACKAGE_KEYWORDS.split(',').map(x => x.replace(/(^\s)|(\s$)/g, '')),
         private: nspData.NSP_PACKAGE_PRIVATE,
         scripts: packageJsonData.scripts ?? {
-            build: "rm -rf dist && babel src -d dist && chmod +x ./dist/*.js"
+            lint: "eslint src",
+            build: "yarn lint && rm -rf dist && babel src -d dist && chmod +x ./dist/*.js"
         },
         eslintConfig: packageJsonData.eslintConfig ?? {
             "root": true,
             "env": {
+                "es6": true,
                 "node": true
             },
             "extends": [
                 "eslint:recommended"
             ],
-            "parserOptions": {
-                "parser": "babel-eslint"
-            },
+            "parser": "babel-eslint",
+            "parserOptions": {},
             "rules": {}
         },
     }

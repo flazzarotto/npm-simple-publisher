@@ -47,10 +47,13 @@ export async function build(fileDir, contextDir, args) {
     if (!args.options['skip-dependencies']) {
         console.info('Adding dev dependancies')
         await interactiveShell('yarn', ['add', '-D', '@babel/preset-env', '@babel/core',
-                '@babel/cli', 'babel-eslint'],
+                '@babel/cli', 'eslint', 'babel-eslint'],
             null, false)
         await interactiveShell('yarn', ['install'], null, false)
     }
+
+    // console.info('Running linter')
+    // await interactiveShell('yarn', ['eslint'], {'': ''}, true)
 
     console.info('Yarn build')
     await interactiveShell('yarn', ['build'], null, false)

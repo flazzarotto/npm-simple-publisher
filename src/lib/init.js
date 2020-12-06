@@ -14,6 +14,18 @@ export const initOptions = [{
     type: 'boolean',
     description: 'Force file override (if project not empty)',
     example: "'kc-nps init --force' or 'script -f'"
+}, {
+    name: 'skip',
+    short: 's',
+    type: 'boolean',
+    description: 'Skip existing files',
+    example: "'kc-nps init --skip' or 'script -s'"
+}, {
+    name: 'update',
+    short: 'u',
+    type: 'boolean',
+    description: 'Force package.json update (when --skip option is used)',
+    example: "'kc-nps init --skip --update' or 'script -s -u'"
 }]
 
 export const initMod = {
@@ -33,120 +45,135 @@ export async function init(fileDir, contextDir, args) {
         }
         try {
             fs.mkdirSync(contextDir + 'src')
-        }
-        catch(e) {
+        } catch (e) {
             console.error(e)
             return
         }
     }
 
     const {
-        force = false
+        force = false,
+        skip = false,
+        update = false
     } = args.options
 
-    const files = [
-        '.babelrc',
-        '.gitignore',
-        'config.json',
-        // 'packageJson.json'
-    ]
+    const files = Object.keys(fileData)
 
     for (let file of files) {
 
         const targetFile = contextDir + ((file !== 'config.json') ? file : 'config.local.json')
         const sourceData = fileData[file]
 
-        function done(data) {
+        const done = function(data) {
             if (fs.existsSync(targetFile)) {
                 if (fs.lstatSync(targetFile).isDirectory()) {
                     throw new Error('File ' + file + ' should not be a directory.')
                 }
+                if (skip) {
+                    console.info('Skipping existing file ' + file + '.')
+                    return
+                }
                 if (!force) {
-                    throw new Error('File ' + file + ' already present. Use --force (-f) to override file.')
+                    throw new Error('File ' + file + ' already present. Use --force (-f) to override file or --skip (-s).')
                 }
                 console.warn('File ' + file + ' will be replaced with fresh one.')
+            } else {
+                console.info('Generating ' + file + '.')
             }
             fs.writeFileSync(targetFile, data)
         }
 
+        const processConfigJson = async () => {
+            let pJson = contextDir + 'package.json'
+
+            if (fs.existsSync(pJson)) {
+                if (skip && !update) {
+                    console.info('package.json already present. Use --skip --update (-su) to update file.')
+                    return
+                }
+            }
+
+            let defaultConfig = JSON.parse(sourceData)
+            let actualConfig = {}
+
+            if (fs.existsSync(targetFile)) {
+                actualConfig = JSON.parse(fs.readFileSync(targetFile).toString())
+            }
+
+            const properties = fileData.configProperties
+
+            let nspData = {
+                ...defaultConfig,
+                ...actualConfig
+            }
+
+            for (let name in defaultConfig) {
+                properties[name].default = nspData[name] ?? properties[name].default
+            }
+
+            console.info('Please fill in following values')
+            console.warn('Note that password will NOT be stored outside of config.local.json which is a'
+                + ' .gitignored file')
+            console.warn('If you don\'t want to store your npm password in config.local.json leave field blank.' +
+                ' You will have to type it when publishing.')
+
+            const result = await prompt.call(properties);
+
+            const del = []
+            for (let name in result) {
+                if (!{}.toString.call(result[name]).length) {
+                    del.push(name)
+                }
+            }
+            for (let d of del) {
+                delete result[d]
+            }
+
+            nspData = {
+                ...defaultConfig, ...result,
+                NSP_PACKAGE_NAME: fs.realpathSync(contextDir).replace(/^.*[/]/, '')
+            }
+
+            nspData.NSP_PACKAGE_PRIVATE = parseBoolean(nspData.NSP_PACKAGE_PRIVATE)
+            nspData.NSP_SCOPED_PACKAGE = parseBoolean(nspData.NSP_SCOPED_PACKAGE)
+
+            for (let prop in nspData) {
+                if (nspData[prop] === '~') {
+                    nspData[prop] = null
+                }
+            }
+
+            let github = isGithub(nspData.NSP_REPOSITORY_REMOTE)
+
+            if (github) {
+                if (!nspData.NSP_ISSUES) {
+                    nspData.NSP_ISSUES = generateGithubIssues(github)
+                }
+                if (!nspData.NSP_GIT_REPOSITORY_HOMEPAGE) {
+                    nspData.NSP_GIT_REPOSITORY_HOMEPAGE = generateGithubHomepage(github)
+                }
+                if (!nspData.NSP_REPOSITORY_SSH_REMOTE) {
+                    nspData.NSP_REPOSITORY_SSH_REMOTE = generateGithubSshRemote(github)
+                }
+            }
+
+            fs.unlinkSync(targetFile)
+            done(JSON.stringify(nspData, null, "\t"))
+            generatePackageJson(fileDir, contextDir)
+        }
+
         switch (file) {
+            case 'configProperties':
+                break
             case 'config.json':
-
-                const defaultConfig = JSON.parse(sourceData)
-                let actualConfig = {}
-
-                if (fs.existsSync(targetFile)) {
-                    actualConfig = JSON.parse(fs.readFileSync(targetFile).toString())
-                }
-
-                const properties = fileData.configProperties
-
-                let nspData = {
-                    ...defaultConfig,
-                    ...actualConfig
-                }
-
-                for (let name in defaultConfig) {
-                    properties[name].default = nspData[name] ?? properties[name].default
-                }
-
-                console.info('Please fill in following values')
-                console.warn('Note that password will NOT be stored outside of config.local.json which is a'
-                +' .gitignored file')
-                console.warn('If you don\'t want to store your npm password in config.local.json leave field blank.'+
-                 ' You will have to type it when publishing.')
-
-                const result = await prompt.call(properties);
-
-                const del = []
-                for (let name in result) {
-                    if (!{}.toString.call(result[name]).length) {
-                        del.push(name)
-                    }
-                }
-                for (let d of del) {
-                    delete result[d]
-                }
-
-                nspData = {
-                    ...defaultConfig, ...result,
-                    NSP_PACKAGE_NAME: fs.realpathSync(contextDir).replace(/^.*[\\\/]/, '')
-                }
-
-                nspData.NSP_PACKAGE_PRIVATE = parseBoolean(nspData.NSP_PACKAGE_PRIVATE)
-                nspData.NSP_SCOPED_PACKAGE = parseBoolean(nspData.NSP_SCOPED_PACKAGE)
-
-                for (let prop in nspData) {
-                    if (nspData[prop] === '~') {
-                        nspData[prop] = null
-                    }
-                }
-
-                let github = isGithub(nspData.NSP_REPOSITORY_REMOTE)
-
-                if (github) {
-                    if (!nspData.NSP_ISSUES) {
-                        nspData.NSP_ISSUES = generateGithubIssues(github)
-                    }
-                    if (!nspData.NSP_GIT_REPOSITORY_HOMEPAGE) {
-                        nspData.NSP_GIT_REPOSITORY_HOMEPAGE = generateGithubHomepage(github)
-                    }
-                    if (!nspData.NSP_REPOSITORY_SSH_REMOTE) {
-                        nspData.NSP_REPOSITORY_SSH_REMOTE = generateGithubSshRemote(github)
-                    }
-                }
-
-                done(JSON.stringify(nspData, null, "\t"))
-
-                generatePackageJson(fileDir, contextDir)
-                await build(fileDir, contextDir, {options: {license: true}})
-
+                await processConfigJson()
                 break
             default:
                 done(sourceData)
                 break
         }
     }
+    await build(fileDir, contextDir, {options: {license: true}})
     console.warn('Init done. Please ensure that all of `./config.local.json` data is valid.')
 }
 

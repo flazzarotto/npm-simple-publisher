@@ -30,7 +30,7 @@ var packageMod = {
 };
 exports.packageMod = packageMod;
 
-function generatePackageJson(fileDir, contextDir, args) {
+function generatePackageJson(fileDir, contextDir) {
   var _nspData$NSP_SCOPE_NA, _packageJsonData$scri, _packageJsonData$esli;
 
   var packageJsonFile = contextDir + 'package.json';
@@ -41,6 +41,8 @@ function generatePackageJson(fileDir, contextDir, args) {
 
   try {
     packageJsonData = _fs["default"].readFileSync(packageJsonFile).toString();
+
+    _nodeCommandManager.console.warn('Updating package.json');
   } catch (e) {
     _nodeCommandManager.console.warn('Creating a new package.json');
 
@@ -49,7 +51,8 @@ function generatePackageJson(fileDir, contextDir, args) {
 
   var nspData = _objectSpread(_objectSpread({}, JSON.parse(_data["default"]['config.json'])), JSON.parse(_fs["default"].readFileSync('config.local.json').toString()));
 
-  packageJsonData = _objectSpread(_objectSpread({}, JSON.parse(packageJsonData)), {}, {
+  packageJsonData = JSON.parse(packageJsonData);
+  packageJsonData = _objectSpread(_objectSpread({}, packageJsonData), {}, {
     name: (nspData.NSP_SCOPED_PACKAGE ? '@' + ((_nspData$NSP_SCOPE_NA = nspData.NSP_SCOPE_NAME) !== null && _nspData$NSP_SCOPE_NA !== void 0 ? _nspData$NSP_SCOPE_NA : nspData.NSP_USERNAME).replace(/(^@)|(\/$)/g, '') + '/' : '') + nspData.NSP_PACKAGE_NAME,
     version: nspData.NSP_PACKAGE_VERSION,
     description: nspData.NSP_PACKAGE_DESCRIPTION,
@@ -62,17 +65,18 @@ function generatePackageJson(fileDir, contextDir, args) {
     }),
     "private": nspData.NSP_PACKAGE_PRIVATE,
     scripts: (_packageJsonData$scri = packageJsonData.scripts) !== null && _packageJsonData$scri !== void 0 ? _packageJsonData$scri : {
-      build: "rm -rf dist && babel src -d dist && chmod +x ./dist/*.js"
+      lint: "eslint src",
+      build: "yarn lint && rm -rf dist && babel src -d dist && chmod +x ./dist/*.js"
     },
     eslintConfig: (_packageJsonData$esli = packageJsonData.eslintConfig) !== null && _packageJsonData$esli !== void 0 ? _packageJsonData$esli : {
       "root": true,
       "env": {
+        "es6": true,
         "node": true
       },
       "extends": ["eslint:recommended"],
-      "parserOptions": {
-        "parser": "babel-eslint"
-      },
+      "parser": "babel-eslint",
+      "parserOptions": {},
       "rules": {}
     }
   });

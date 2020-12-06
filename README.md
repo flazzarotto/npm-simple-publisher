@@ -27,7 +27,9 @@ sudo npm install -g @kebab-case/npm-simple-publisher
   ```shell script
   kc-nsp init
   ```
-  You can re-run this command afterwards, but you will need to use the `-f` option to force overwrite of files.
+  You can re-run this command afterwards, but you will need to add the `-f` option to force overwrite of files, or the
+  `-s` to skip existing files. Use the `-su` options to only update your package.json 
+  (existing scripts / eslint config won't be replaced).
 * Enter prompted values. **~** stands for `null`. You can replace vars later in the newly created
   `config.local.json` with yours:
   ```json
@@ -59,7 +61,7 @@ sudo npm install -g @kebab-case/npm-simple-publisher
   
   P.S. Default package name will be `your-project-name` folder name, but it can be changed in ```config.local.json```.
 * You can now write es6 in your `./src` folder and set up your own settings in `package.json` and `.gitignore`.
-* DO NOT forget to add your fantastic `README.md`!
+* DO NOT forget to add your fantastic `README.md`! If you don't, @kc/NSP will add a placeholder before publishing.
 * Ready to publish to npm ? Use the `kc-nsp publish` script!
   
   First, the `kc-nsp build` sub-command will create a `dist` folder will be created with cjs-compliant code, and your

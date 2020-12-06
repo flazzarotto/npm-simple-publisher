@@ -70,7 +70,7 @@ export const publishMod = {
     exec: publish
 }
 
-export async function publish(fileDir, contextDir, args, previous) {
+export async function publish(fileDir, contextDir, args) {
 
     const nspData = JSON.parse(fs.readFileSync(contextDir + 'config.local.json').toString())
 
@@ -121,7 +121,7 @@ export async function publish(fileDir, contextDir, args, previous) {
     }
 
     if (args.options['update-version']) {
-        version = updateVersion(args.options['update-version'])
+        version = updateVersion(args.options['update-version'], '.')
     }
 
     let prompter = `Are you sure you want to publish your package in ${args.options.patch ? ' patched' : ''} `
@@ -162,11 +162,11 @@ export async function publish(fileDir, contextDir, args, previous) {
         }
         if (nspData.NSP_REPOSITORY_SSH_REMOTE) {
             console.info(`Pushing commit ${commitMessage} to remote`)
-            exec(`git add . && git commit -m "${commitMessage}" && git push`)
+            await exec(`git add . && git commit -m "${commitMessage}" && git push`)
             if (args.options['update-version']) {
                 console.info('Pushing new tag to git remote')
                 let tagMessage = args.options['tag-message'] ?? `version ${version}`
-                exec(`git tag -a v${version} -m "${tagMessage}" && git push && git push --tags`)
+                await exec(`git tag -a v${version} -m "${tagMessage}" && git push && git push --tags`)
             }
         }
     }
