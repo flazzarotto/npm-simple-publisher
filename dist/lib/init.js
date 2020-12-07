@@ -231,7 +231,9 @@ function _init() {
                                     }
                                   }
 
-                                  _fs["default"].unlinkSync(targetFile);
+                                  if (_fs["default"].existsSync(targetFile)) {
+                                    _fs["default"].unlinkSync(targetFile);
+                                  }
 
                                   done(JSON.stringify(nspData, null, "\t"));
                                   (0, _generatePackageJson.generatePackageJson)(fileDir, contextDir);

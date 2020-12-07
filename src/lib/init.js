@@ -157,7 +157,10 @@ export async function init(fileDir, contextDir, args) {
                 }
             }
 
-            fs.unlinkSync(targetFile)
+            if (fs.existsSync(targetFile)) {
+                fs.unlinkSync(targetFile)
+            }
+
             done(JSON.stringify(nspData, null, "\t"))
             generatePackageJson(fileDir, contextDir)
         }
