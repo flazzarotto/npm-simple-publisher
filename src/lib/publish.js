@@ -210,7 +210,7 @@ export async function publish(fileDir, contextDir, args) {
             await interactiveShell('npm', ['deprecate', packageName+ '@0-' + deprecate, message])
             await interactiveShell('npm', ['deprecate', packageName+ '@1-' + deprecate, message])
         }
-    } else {
+    } else if (deprecate) {
         console.error('No valid version supplied, skipping deprecate command.')
     }
 

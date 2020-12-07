@@ -366,7 +366,9 @@ function _publish() {
             break;
 
           case 89:
-            _nodeCommandManager.console.error('No valid version supplied, skipping deprecate command.');
+            if (deprecate) {
+              _nodeCommandManager.console.error('No valid version supplied, skipping deprecate command.');
+            }
 
           case 90:
           case "end":
