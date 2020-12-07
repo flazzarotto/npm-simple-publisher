@@ -171,7 +171,7 @@ function _publish() {
               version = (0, _nodeCommandManager.updateVersion)(args.options['update-version'], '.');
             }
 
-            prompter = "Are you sure you want to publish your package in : ''} " + "version ".concat(version, " on ").concat(Object.keys(platforms).join('|'), "? (yes/no)");
+            prompter = "Are you sure you want to publish your package in : " + "version ".concat(version, " on ").concat(Object.keys(platforms).join('|'), "? (yes/no)");
 
           case 16:
             if (prompted) {

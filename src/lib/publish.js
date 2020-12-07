@@ -119,7 +119,7 @@ export async function publish(fileDir, contextDir, args) {
         version = updateVersion(args.options['update-version'], '.')
     }
 
-    let prompter = `Are you sure you want to publish your package in : ''} `
+    let prompter = `Are you sure you want to publish your package in : `
         + `version ${version} on ${Object.keys(platforms).join('|')}? (yes/no)`
 
     while (!prompted) {
